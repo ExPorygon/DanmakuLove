@@ -42,8 +42,9 @@ function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
 end
 
 
-function ObjPlayer:startTask(task)
+function ObjPlayer:startTask(task,...)
 	local coo = coroutine.create(task)
+	coroutine.resume(coo,self,...)
 	table.insert(self.task,coo)
 	return coo
 end
@@ -93,7 +94,7 @@ function ObjPlayer:update(dt)
 	if self.state ~= "normal" and self.state ~= "hit" then self.bombAllow = false else self.bombAllow = true end
 
 	for i = 1, #self.task do
-		if coroutine.status(self.task[i]) ~= "dead" then coroutine.resume(self.task[i]) end
+		if coroutine.status(self.task[i]) == "suspended" then coroutine.resume(self.task[i]) end
  	end
 end
 
