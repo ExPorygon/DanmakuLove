@@ -33,8 +33,9 @@ function ObjEnemy:getLife()
 	return self.life
 end
 
-function ObjEnemy:startTask(task)
+function ObjEnemy:startTask(task,...)
 	local coo = coroutine.create(task)
+	coroutine.resume(coo,self,...)
 	table.insert(self.task,coo)
 	return coo
 end
@@ -44,7 +45,7 @@ function ObjEnemy:update(dt)
 	ObjMove.update(self,dt)
 	self:collision()
 	for i = 1, #self.task do
-		if coroutine.status(self.task[i]) ~= "dead" then coroutine.resume(self.task[i]) end
+		if coroutine.status(self.task[i]) == "suspended" then coroutine.resume(self.task[i]) end
  	end
 	if self.life <= 0 then
 		self.isDelete = true

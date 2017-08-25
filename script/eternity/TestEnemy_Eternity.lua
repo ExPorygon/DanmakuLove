@@ -1,27 +1,20 @@
 objEnemy = ObjEnemy(640,200,1000,"img/eternity.png",0,0,164,212)
 
 function testEnemyEternity()
-	objEnemy:startTask(objEnemy.mainTask)
+	objEnemy:startTask(objEnemy.mainTask,objEnemy)
 end
 
-function objEnemy.mainTask()
-	objEnemy:startTask(objEnemy.fire1)
-	objEnemy:startTask(objEnemy.fire2)
+function objEnemy.mainTask(self)
+	objEnemy:startTask(self.fire,60,90)
+	objEnemy:startTask(self.fire,10,15)
 end
 
-function objEnemy.fire1()
-	testTask(10,15)
-end
-function objEnemy.fire2()
-	testTask(60,90)
-end
-function testTask(num,w)
-	local id = #objEnemy.task
+function objEnemy.fire(obj,num,w)
 	while true do
 		local dir = love.math.random(0,360)
-		for i = 0, num-1 do
-			CreateShotA1(objEnemy:getX(),objEnemy:getY(),2.5,dir+i*360/num,"arrowhead_gray",10)
+		for i = 1, num do
+			CreateShotA1(obj:getX(),obj:getY(),2.5,dir+i*360/num,"arrowhead_gray",10)
 		end
-		wait(objEnemy.task[id],w)
+		wait(w)
 	end
 end

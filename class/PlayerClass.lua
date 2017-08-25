@@ -53,7 +53,6 @@ function ObjPlayer:update(dt)
 	if self:collision() == true then
 		self:startTask(self.explodeEffect)
 		self.state = "hit"
-		print("hit")
 	end
 
 	if self.invincibility > 0 then
