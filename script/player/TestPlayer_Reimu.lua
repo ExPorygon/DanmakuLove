@@ -12,20 +12,20 @@ function testPlayerReimu()
 	player:startTask(player.renderHitbox2)
 end
 
-function player.shot()
+function player.shot(obj)
 	local count = -1
-	local id = #player.task
+	local id = #obj.task
 	while true do
-		if love.keyboard.isDown("z") and count == -1 and player.shotAllow or count > 2 then
+		if love.keyboard.isDown("z") and count == -1 and obj.shotAllow or count > 2 then
 			count = 0
 		end
 		if count == 2 then
-			test_shot(player:getX()-12,player:getY()-5)
-			test_shot(player:getX()+12,player:getY()-5)
+			test_shot(obj:getX()-12,obj:getY()-5)
+			test_shot(obj:getX()+12,obj:getY()-5)
 			count = -1
 		end
 		if count >= 0 then count = count + 1 end
-		wait(player.task[id],1)
+		wait(obj.task[id],1)
 	end
 end
 function player.renderHitbox1()
