@@ -4,10 +4,10 @@ local ShotData = require("ShotDefinition")
 ObjShot = {}
 ObjShot.__index = ObjShot
 
-local imgDelay = love.graphics.newImage("img/Delay.png")
+local imgDelay = love.graphics.newImage("img/delay.png")
 local quadDelay = {}
 for i = 0, 7 do
-	quadDelay[i+1] = love.graphics.newQuad(0+i*32, 0, 32, 32, imgDelay:getDimensions())
+	quadDelay[i+1] = love.graphics.newQuad(0+i*64, 0, 64, 64, imgDelay:getDimensions())
 end
 local colorDelay = {
 	gray = quadDelay[1],
@@ -54,7 +54,7 @@ function ObjShot:_init(x,y)
 	self.type = "shot"
 	self.graphic = 1
 	self.delay = 0
-	self.hitbox = 0
+	self.hitbox = 5
 	self.image = ShotData.shot_image
 	self.damage = 0
 	self.penetration = 0
@@ -81,7 +81,7 @@ function ObjShot:draw()
 		love.graphics.setBlendMode("add")
 		minScaleDelay = 0.45*(self.data.width/16)
 		scaleDelay = math.min(minScaleDelay+3.0*(self.delay/75), minScaleDelay+3.0)
-		love.graphics.draw(imgDelay, colorDelay[self.data.delay_color], self.x, self.y, 0, scaleDelay, scaleDelay, 16, 16)
+		love.graphics.draw(imgDelay, colorDelay[self.data.delay_color], self.x, self.y, 0, scaleDelay, scaleDelay, 32, 32)
 		self.delay = self.delay - 1
 		if self.delay <= 0 then self.isDelay = false love.graphics.setBlendMode("alpha") end
 	else
@@ -104,6 +104,7 @@ end
 
 function ObjShot:update(dt)
 	if self.isDelete then return end
+	self:spellCollision()
 	if self.x > 1280+40 or self.y > 960+40 or self.x < -40 or self.y < -40 then
 		self:delete()
 		return
@@ -117,6 +118,37 @@ function ObjShot:update(dt)
 		self.y = self.y + (self.speed * 60 * math.sin(math.rad(self.moveDir)) * dt)
 
 	end
+end
+
+function ObjShot:spellCollision()
+	for i = 1, #spell_all do
+		if spell_all[i].isDelete == false then
+			local obj = spell_all[i].collision
+			if obj.type == "circle" then
+				if math.dist(obj.x,obj.y,self.x,self.y) < (self.hitbox + obj.radius) then
+					self:delete()
+				end
+			end
+			if obj.type == "rectangle" then
+					-- local vert1,vert2,vert3,vert4 = getRectVertices(obj[j].startX,obj[j].startY,obj[j].endX,obj[j].endY,obj[j].width)
+				if collideCircleWithRotatedRectangle( {x = self.x, y = self.y, radius = self.hitbox} , obj) then
+					self:delete()
+				end
+			end
+		end
+	end
+end
+
+-- function ObjShot:delete()
+-- 	self.isDelete = true
+-- 	-- self:bulletBreakEffect()
+-- end
+
+function ObjShot:bulletBreakEffect()
+	objBreak = ObjImage(self.x,self.y,"img/bullet_break.png")
+	objBreak:setGrid(64, 64, objBreak.image:getWidth(), objBreak.image:getHeight())
+	objBreak:addAnim("break",'pauseAtEnd',0.05,'1-8',1)
+	objBreak:setAnim("break")
 end
 
 function CreateShotA1(x,y,speed,dir,graphic,delay)
@@ -151,4 +183,10 @@ function findDeadBullet()
 		end
 	end
 	return x
+end
+
+function DeleteAllShot()
+	for i=1,5000 do
+		shot_all[i]:delete()
+	end
 end

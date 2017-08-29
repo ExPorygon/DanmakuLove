@@ -34,7 +34,7 @@ function ObjImage:_init(x,y,filepath,initX,initY,width,height)
 	end
 	if self.image then
 		self.animList = {}
-		self.grid = anim8.newGrid(64, 96, self.image:getWidth(), self.image:getHeight())
+		-- self.grid =
 	end
 	-- Default Values
 	self.scale = {}
@@ -75,18 +75,23 @@ function ObjImage:setDrawPriority(num)
 	table.insert(listDrawLayer[self.drawPriority],self)
 end
 
+function ObjImage:setGrid(frameWidth, frameHeight, imageWidth, imageHeight, left, top, border)
+	self.grid = anim8.newGrid(64, 96, self.image:getWidth(), self.image:getHeight())
+end
+
 function ObjImage:setAnim(name)
-	self.offset.x = 64/2
-	self.offset.y = 96/2
 	if self.animCurrent ~= name then
 		self.animCurrent = name
 		self.animList[name]:gotoFrame(1)
 		self.animList[name]:resume()
+		self.offset.x, self.offset.y = self.animList[name]:getDimensions()
+		self.offset.x = self.offset.x/2
+		self.offset.y = self.offset.y/2
 	end
 end
-function ObjImage:addAnim(name,onLoop,...)
+function ObjImage:addAnim(name,onLoop,duration,...)
 	local frames = self.grid(...)
-	local animation = anim8.newAnimation(frames, 0.07, onLoop)
+	local animation = anim8.newAnimation(frames, duration, onLoop)
 	self.animList[name] = animation
 end
 
@@ -105,6 +110,14 @@ end
 
 function ObjImage:setScaleY(scale)
 	self.scale.y = scale
+end
+
+function ObjImage:getScaleX(scale)
+	return self.scale.x
+end
+
+function ObjImage:getScaleY(scale)
+	return self.scale.y
 end
 
 function ObjImage:setScaleXY(scaleX,scaleY)

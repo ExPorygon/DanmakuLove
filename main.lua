@@ -8,6 +8,7 @@ function love.load()
 	require "lib/function_list"
 	require "lib/function_wait"
 	require "lib/function_math"
+	require "lib/function_misc"
 	require "class/PlayerClass"
 	require "class/ShotClass"
 	require "class/EnemyClass"
@@ -40,6 +41,7 @@ end
 
 function love.keypressed(key)
 	if key == 'escape' then love.event.quit() end
+	if key == 'k' then DeleteAllShot() end
 end
 
 function love.update(dt)
@@ -54,7 +56,7 @@ end
 function love.draw()
 	love.graphics.print("FPS:"..tostring(love.timer.getFPS()),5,5)
 	-- love.graphics.print("Memory Usage:"..torstring(collectgarbage("count")/1000),5,15)
-	love.graphics.print("Enemy Life:"..tostring(objEnemy:getLife()),5,25)
+	love.graphics.print("Enemy Life:"..tostring(objEnemy:getLife()),objEnemy:getX()-60,objEnemy:getY()-100)
 	love.graphics.print("Player State:"..player.state,5,45)
 	love.graphics.print("Player invincibility:"..player.invincibility,5,55)
 

@@ -1,4 +1,4 @@
-function wait(coo,w)
+function wait(w)
 	for i = 1, w do
 		coroutine.yield()
 	end

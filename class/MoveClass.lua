@@ -97,3 +97,7 @@ end
 function AngleBetweenPoints(x1, y1, x2, y2) --get angle from (x1, y1) to (x2, y2)
 	return math.deg(math.atan2(y2-y1, x2-x1))
 end
+
+function AngleBetweenPointsRad(x1, y1, x2, y2) --get angle from (x1, y1) to (x2, y2)
+	return math.atan2(y2-y1, x2-x1)
+end

@@ -1,7 +1,10 @@
 require "class/MoveClass"
+require "class/SpellClass"
 
 ObjPlayer = {}
 ObjPlayer.__index = ObjPlayer
+
+spell_all = {}
 
 setmetatable(ObjPlayer, {
 	__index = ObjMove,
@@ -23,6 +26,8 @@ function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
 	self.slowSpeed = 1.9
 	self.fastSpeed = 6
 
+	self.isBombing = false
+
 	self.shotAllow = true
 	self.bombAllow = true
 	self.invincibility_init = 210
@@ -36,12 +41,20 @@ function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
 	self.state = "normal"
 
 	self.task = {}
-	self.hitcount = 0 -- temp
 	self:setDrawPriority(41)
 
 end
 
+function ObjPlayer:setInvincibility(iframes)
+	self.invincibility = iframes
+end
 
+function ObjPlayer:startNamedTask(task,name,...)
+	local coo = coroutine.create(task)
+	coroutine.resume(coo,self,...)
+	self.task[name] = coo
+	return coo
+end
 function ObjPlayer:startTask(task,...)
 	local coo = coroutine.create(task)
 	coroutine.resume(coo,self,...)
@@ -52,7 +65,7 @@ end
 function ObjPlayer:update(dt)
 	self:move(dt)
 	if self:collision() == true then
-		self:startTask(self.explodeEffect)
+		self:startNamedTask(self.explodeEffect,"death_explosion")
 		self.state = "hit"
 	end
 
@@ -93,9 +106,18 @@ function ObjPlayer:update(dt)
 	if self.state ~= "normal" then self.shotAllow = false else self.shotAllow = true end
 	if self.state ~= "normal" and self.state ~= "hit" then self.bombAllow = false else self.bombAllow = true end
 
-	for i = 1, #self.task do
-		if coroutine.status(self.task[i]) == "suspended" then coroutine.resume(self.task[i]) end
- 	end
+	if love.keyboard.isDown("x") and not self.isBombing then
+		self:startNamedTask(self.bomb,"bomb")
+		self.isBombing = true
+	end
+
+	-- for i = 1, #self.task do
+	-- 	if coroutine.status(self.task[i]) == "suspended" then coroutine.resume(self.task[i]) end
+ -- 	end
+	for i,v in pairs(self.task) do
+		if coroutine.status(v) == "suspended" then coroutine.resume(v) end
+	end
+	-- if self.task.death_explosion then coroutine.resume(self.task.death_explosion) end
 end
 
 function ObjPlayer:move(dt)
@@ -175,9 +197,8 @@ function ObjPlayer:collision()
 	end
 end
 
-function ObjPlayer.explodeEffect()
-	local obj = ObjImage(player.x,player.y,"img/explode.png")
-	local id = #player.task
+function ObjPlayer.explodeEffect(self)
+	local obj = ObjImage(self.x,self.y,"img/explode.png")
 	obj:setBlendMode("add")
 	obj:setDrawPriority(60)
 
@@ -190,10 +211,49 @@ function ObjPlayer.explodeEffect()
 		obj:setColor(255,64,64)
 		obj:setAlpha(alpha)
 		obj:setScaleXY(scale,scale)
-		wait(player.task[id],1)
+		wait(1)
 	end
 	obj:delete()
 end
+
+function ObjPlayer.renderHitbox(self,rot)
+	local obj = ObjImage(0,0,"img/hitbox.png")
+	local count = 0
+	local alpha = 0
+	local scale = 0
+	local focusStart = true
+
+	obj:setDrawPriority(51)
+
+	while true do
+		if self.state == "down" then obj:setVisible(false) else obj:setVisible(true) end
+		if love.keyboard.isDown("lshift") and focusStart then
+			scale = 2
+			alpha = 0
+			focusStart = false
+		end
+		if scale > 0.8 then
+			scale = scale - 1.2/10
+			alpha = alpha + 255/10
+			count = count + 4
+		end
+		if not love.keyboard.isDown("lshift") then
+			if scale <= 0.8 and scale > 0 then
+				scale = scale - 0.8/10
+				alpha = alpha - 255/10
+			end
+			focusStart = true
+		end
+		obj:setAngle(count*rot)
+		obj:setPosition(self:getX(), self:getY())
+		obj:setScaleXY(scale, scale)
+		obj:setAlpha(alpha)
+
+		count = count + 3.5;
+		wait(1)
+	end
+end
+
 function ObjPlayer:draw()
 	if self.isDelete or not self.visible or self.state == "down" then return end
 	local initBlendMode = love.graphics.getBlendMode()
