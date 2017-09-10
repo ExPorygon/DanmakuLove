@@ -1,4 +1,4 @@
-require "class/MoveClass"
+require "class/Move"
 
 ObjSpell = {}
 ObjSpell.__index = ObjSpell
@@ -19,7 +19,7 @@ function ObjSpell:_init(x,y,filepath,initX,initY,width,height)
 	self.type = "spell"
 	self.damage = 0
 	self.eraseShot = true
-	self.collision =
+	self.collision = {}
 	-- self.collision_list = {}
 
 	table.insert(spell_all,self)

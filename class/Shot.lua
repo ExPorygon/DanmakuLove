@@ -1,4 +1,4 @@
-require "class/MoveClass"
+require "class/Move"
 local ShotData = require("ShotDefinition")
 
 ObjShot = {}
@@ -123,16 +123,18 @@ end
 function ObjShot:spellCollision()
 	for i = 1, #spell_all do
 		if spell_all[i].isDelete == false then
-			local obj = spell_all[i].collision
-			if obj.type == "circle" then
-				if math.dist(obj.x,obj.y,self.x,self.y) < (self.hitbox + obj.radius) then
-					self:delete()
+			if spell_all[i].eraseShot then
+				local obj = spell_all[i].collision
+				if obj.type == "circle" then
+					if math.dist(obj.x,obj.y,self.x,self.y) < (self.hitbox + obj.radius) then
+						self:delete()
+					end
 				end
-			end
-			if obj.type == "rectangle" then
-					-- local vert1,vert2,vert3,vert4 = getRectVertices(obj[j].startX,obj[j].startY,obj[j].endX,obj[j].endY,obj[j].width)
-				if collideCircleWithRotatedRectangle( {x = self.x, y = self.y, radius = self.hitbox} , obj) then
-					self:delete()
+				if obj.type == "rectangle" then
+						-- local vert1,vert2,vert3,vert4 = getRectVertices(obj[j].startX,obj[j].startY,obj[j].endX,obj[j].endY,obj[j].width)
+					if collideCircleWithRotatedRectangle( {x = self.x, y = self.y, radius = self.hitbox} , obj) then
+						self:delete()
+					end
 				end
 			end
 		end

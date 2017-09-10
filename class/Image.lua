@@ -1,4 +1,4 @@
-require "class/BaseClass"
+require "class/Base"
 local anim8 = require 'lib/anim8'
 
 ObjImage = {}

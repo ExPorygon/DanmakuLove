@@ -1,4 +1,4 @@
-require "class/MoveClass"
+require "class/Move"
 
 ObjEnemy = {}
 ObjEnemy.__index = ObjEnemy
@@ -20,8 +20,8 @@ function ObjEnemy:_init(x,y,life,filepath,initX,initY,width,height)
 	self.life = life
 	self.hitboxToShot = 48
 	self.hitboxToPlayer = 36
+	self.invincibility = 0
 	self:setDrawPriority(50)
-	self.task = {}
 
 end
 
@@ -33,20 +33,20 @@ function ObjEnemy:getLife()
 	return self.life
 end
 
-function ObjEnemy:startTask(task,...)
-	local coo = coroutine.create(task)
-	coroutine.resume(coo,self,...)
-	table.insert(self.task,coo)
-	return coo
+function ObjEnemy:setInvincibility(frames)
+	self.invincibility = frames
 end
 
 function ObjEnemy:update(dt)
 	if self.isDelete then return end
+
+	if self.invincibility > 0 then
+		self.invincibility = self.invincibility - 1
+	end
+
 	ObjMove.update(self,dt)
 	self:collision()
-	for i = 1, #self.task do
-		if coroutine.status(self.task[i]) == "suspended" then coroutine.resume(self.task[i]) end
- 	end
+	self:resumeAllTasks()
 	if self.life <= 0 then
 		self.isDelete = true
 		self = nil
@@ -59,7 +59,7 @@ function ObjEnemy:collision()
 			if math.dist(shot_all[i].x,shot_all[i].y,self.x,self.y) < (self.hitboxToShot + 14) then
 				-- self.hitcount = self.hitcount + 1
 				-- print("Hit Count:"..self.hitcount)
-				self.life = self.life - shot_all[i].damage
+				if self.invincibility <= 0 then self.life = self.life - shot_all[i].damage end
 				shot_all[i].penetration = shot_all[i].penetration - 1
 				if shot_all[i].penetration <= 0 then
 					shot_all[i].isDelete = true
@@ -67,11 +67,12 @@ function ObjEnemy:collision()
 			end
 		end
 	end
+	if self.invincibility > 0 then return end
 	for i = 1, #spell_all do
 		if spell_all[i].isDelete == false then
 			local obj = spell_all[i].collision
 			if obj.type == "circle" then
-				if math.dist(obj.x,obj.y,self.x,self.y) < (self.hitboxToShot + 14) then
+				if math.dist(obj.x,obj.y,self.x,self.y) < (self.hitboxToShot + obj.radius) then
 					self.life = self.life - spell_all[i].damage
 				end
 			end

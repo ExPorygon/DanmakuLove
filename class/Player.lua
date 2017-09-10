@@ -1,5 +1,5 @@
-require "class/MoveClass"
-require "class/SpellClass"
+require "class/Move"
+require "class/Spell"
 
 ObjPlayer = {}
 ObjPlayer.__index = ObjPlayer
@@ -22,7 +22,7 @@ function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
 	self.type = "player"
 	self.life = 2
 	self.bomb = 2
-	self.hitbox = 5
+	self.hitbox = 4
 	self.slowSpeed = 1.9
 	self.fastSpeed = 6
 
@@ -40,26 +40,12 @@ function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
 	self.respawn_frames = self.respawn_frames_init
 	self.state = "normal"
 
-	self.task = {}
 	self:setDrawPriority(41)
 
 end
 
 function ObjPlayer:setInvincibility(iframes)
 	self.invincibility = iframes
-end
-
-function ObjPlayer:startNamedTask(task,name,...)
-	local coo = coroutine.create(task)
-	coroutine.resume(coo,self,...)
-	self.task[name] = coo
-	return coo
-end
-function ObjPlayer:startTask(task,...)
-	local coo = coroutine.create(task)
-	coroutine.resume(coo,self,...)
-	table.insert(self.task,coo)
-	return coo
 end
 
 function ObjPlayer:update(dt)
@@ -106,17 +92,12 @@ function ObjPlayer:update(dt)
 	if self.state ~= "normal" then self.shotAllow = false else self.shotAllow = true end
 	if self.state ~= "normal" and self.state ~= "hit" then self.bombAllow = false else self.bombAllow = true end
 
-	if love.keyboard.isDown("x") and not self.isBombing then
+	if love.keyboard.isDown("x") and not self.isBombing and self.state == "normal" then
 		self:startNamedTask(self.bomb,"bomb")
 		self.isBombing = true
 	end
 
-	-- for i = 1, #self.task do
-	-- 	if coroutine.status(self.task[i]) == "suspended" then coroutine.resume(self.task[i]) end
- -- 	end
-	for i,v in pairs(self.task) do
-		if coroutine.status(v) == "suspended" then coroutine.resume(v) end
-	end
+	self:resumeAllTasks()
 	-- if self.task.death_explosion then coroutine.resume(self.task.death_explosion) end
 end
 
@@ -186,9 +167,10 @@ end
 
 function ObjPlayer:collision()
 	for i = 1, 5000 do
-		if shot_all[i].isDelete == false and shot_all[i].source == "enemy" then
-			if math.dist(shot_all[i].x,shot_all[i].y,self.x,self.y) < (self.hitbox + 10) then
-				shot_all[i]:delete()
+		local shot = shot_all[i]
+		if shot.isDelete == false and shot.source == "enemy" then
+			if math.dist(shot.x,shot.y,self.x,self.y) < (self.hitbox + shot.hitbox) then
+				shot:delete()
 				if self.state == "normal" and self.invincibility <= 0 then
 					return true
 				end

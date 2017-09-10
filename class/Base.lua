@@ -16,6 +16,7 @@ function ObjBase:_init()
 	self.isDelete = false
 	self.type = "base"
 	self.value = {}
+	self.task = {}
 end
 
 function ObjBase:setValue(name,value)
@@ -52,4 +53,27 @@ end
 
 function ObjBase:isDeleted()
 	return self.isDelete
+end
+
+function ObjBase:startNamedTask(task,name,...)
+	local coo = coroutine.create(task)
+	coroutine.resume(coo,self,...)
+	self.task[name] = coo
+	return coo
+end
+
+function ObjBase:startTask(task,...)
+	local coo = coroutine.create(task)
+	coroutine.resume(coo,self,...)
+	table.insert(self.task,coo)
+	return coo
+end
+
+function ObjBase:resumeAllTasks()
+	-- for i = 1, #self.task do
+	-- 	if coroutine.status(self.task[i]) == "suspended" then coroutine.resume(self.task[i]) end
+ -- 	end
+	for i,v in pairs(self.task) do
+		if coroutine.status(v) == "suspended" then coroutine.resume(v) end
+	end
 end

@@ -9,19 +9,23 @@ function love.load()
 	require "lib/function_wait"
 	require "lib/function_math"
 	require "lib/function_misc"
-	require "class/PlayerClass"
-	require "class/ShotClass"
-	require "class/EnemyClass"
+	require "class/Player"
+	require "class/Shot"
+	require "class/Boss"
+	require "class/AttackPattern"
+	require "class/System"
 
 	require "script/player/TestPlayer_Reimu"
-	require "script/eternity/TestEnemy_Eternity"
+	-- require "script/eternity/TestEnemy_Eternity"
+	require "script/eternity/TestBoss_Eternity"
 
 	sHeight = love.graphics.getHeight()
 	sWidth =  love.graphics.getWidth()
 
 	testPlayerReimu()
 	-- testImage()
-	testEnemyEternity()
+	-- testEnemyEternity()
+	testBossEternity()
 
 
 end
@@ -49,14 +53,15 @@ function love.update(dt)
 
 	player:update(dt)
 	-- testImg:update(dt)
-	objEnemy:update(dt)
+	-- objEnemy:update(dt)
+	objBoss:update(dt)
 	collectgarbage("step",2)
 end
 
 function love.draw()
 	love.graphics.print("FPS:"..tostring(love.timer.getFPS()),5,5)
 	-- love.graphics.print("Memory Usage:"..torstring(collectgarbage("count")/1000),5,15)
-	love.graphics.print("Enemy Life:"..tostring(objEnemy:getLife()),objEnemy:getX()-60,objEnemy:getY()-100)
+	love.graphics.print("Boss Life:"..tostring(objBoss:getLife()),objBoss:getX()-60,objBoss:getY()-100)
 	love.graphics.print("Player State:"..player.state,5,45)
 	love.graphics.print("Player invincibility:"..player.invincibility,5,55)
 

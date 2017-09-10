@@ -1,4 +1,4 @@
-require "class/ImageClass"
+require "class/Image"
 
 ObjMove = {}
 ObjMove.__index = ObjMove
