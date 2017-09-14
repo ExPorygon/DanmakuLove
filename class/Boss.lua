@@ -18,6 +18,7 @@ function ObjBoss:_init(x,y,filepath,initX,initY,width,height)
 	-- Default Values
 	self.type = "boss"
 	self.bossName = "?????"
+	self.effect_color_list = {}
 	self.circleColor = "Red"
 	self.auraColor = {1,1,1}
 
@@ -64,6 +65,10 @@ end
 
 function ObjBoss:setAuraColor(color)
 	self.auraColor = color
+end
+
+function ObjBoss:addEffectColor(key,red,green,blue)
+ self.effect_color_list[key] = {red=red,green=green,blue=blue}
 end
 
 function ObjBoss:updateCurrentEvent()

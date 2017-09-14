@@ -33,6 +33,19 @@ function ObjEnemy:getLife()
 	return self.life
 end
 
+function ObjEnemy:setHitbox(hitboxToShot,hitboxToPlayer)
+ self.hitboxToShot = hitboxToShot
+ self.hitboxToPlayer = hitboxToPlayer
+end
+
+function ObjEnemy:setHitboxToShot(hitbox)
+ self.hitboxToShot = hitbox
+end
+
+function ObjEnemy:setHitboxToPlayer(hitbox)
+ self.hitboxToPlayer = hitbox
+end
+
 function ObjEnemy:setInvincibility(frames)
 	self.invincibility = frames
 end
@@ -86,7 +99,7 @@ function ObjEnemy:collision()
 	end
 end
 
-function collideCircleWithRotatedRectangle(circle, rect) --Ported to Lua from http://www.migapro.com/circle-and-rotated-rectangle-collision-detection/
+local function collideCircleWithRotatedRectangle(circle, rect) --Ported to Lua from http://www.migapro.com/circle-and-rotated-rectangle-collision-detection/
 
 	local rectCenterX = rect.x
 	local rectCenterY = rect.y
@@ -135,7 +148,7 @@ function collideCircleWithRotatedRectangle(circle, rect) --Ported to Lua from ht
 	return collision
 end
 
-function getRectVertices(startX,startY,endX,endY,width)
+local function getRectVertices(startX,startY,endX,endY,width)
 	local angle = AngleBetweenPointsRad(startX,startY,endX,endY)
 	local x1 = startX + math.cos(angle-90)*width
 	local y1 = startY + math.sin(angle-90)*width
