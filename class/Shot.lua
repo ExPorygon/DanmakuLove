@@ -1,5 +1,6 @@
 require "class/Move"
-local ShotData = require("ShotDefinition")
+
+local ShotData_Enemy = require "script/shot/TestShot_Enemy"
 
 ObjShot = {}
 ObjShot.__index = ObjShot
@@ -47,7 +48,7 @@ for i = 1, 5000 do
 	-- table.insert(shot_all,i,obj)
 end
 
-function ObjShot:_init(x,y)
+function ObjShot:_init(x,y,source)
 	ObjMove._init(self,x,y)
 
 	-- Default Values
@@ -55,11 +56,14 @@ function ObjShot:_init(x,y)
 	self.graphic = 1
 	self.delay = 0
 	self.hitbox = 5
-	self.image = ShotData.shot_image
 	self.damage = 0
 	self.penetration = 0
-	self.source = "enemy"
-	self:setDrawPriority(50)
+	self.source = source
+	if source == "enemy" then self.definition = ShotData_Enemy end
+	if source == "player" then self.definition = player:getShotDefinition() end
+	self.image = self.definition.image
+	if source == "enemy" then self:setDrawPriority(50) end
+	if source == "player" then self:setDrawPriority(40) end
 
 end
 
@@ -75,7 +79,12 @@ function ObjShot:draw()
 	if self.isDelete or not self.visible then return end
 
 	if self.delay > 0 then self.isDelay = true else self.isDelay = false end
-	self.data = ShotData[self.graphic]
+	self.data = self.definition[self.graphic]
+	if self.data == nil then error("The specified shot name does not exist") end
+	if not self.data.render then self.data.render = "alpha" end
+	if not self.data.fixed_angle then self.data.fixed_angle = false end
+	if not self.data.angular_velocity then self.data.angular_velocity = 0 end
+	if not self.data.rot_angle then self.data.rot_angle = 0 end
 
 	if self.isDelay then
 		love.graphics.setBlendMode("add")
@@ -86,16 +95,18 @@ function ObjShot:draw()
 		if self.delay <= 0 then self.isDelay = false love.graphics.setBlendMode("alpha") end
 	else
 
-		self.offset.x = self.data.width/2
-		self.offset.y = self.data.height/2
+		self.offset_auto.x = self.data.width/2
+		self.offset_auto.y = self.data.height/2
+		if self.data.offsetX then self.offset_manual.x = self.data.offsetX end
+		if self.data.offsetY then self.offset_manual.y = self.data.offsetY end
 
 		local initBlendMode = love.graphics.getBlendMode()
 		love.graphics.setBlendMode(self.blendMode)
 		love.graphics.setColor(self.color.red, self.color.green, self.color.blue, self.alpha)
 		if self.data.fixed_angle then
-			love.graphics.draw(self.image, self.data.quad, self.x, self.y, 0, self.scale.x, self.scale.y, self.offset.x, self.offset.y)
+			love.graphics.draw(self.image, self.data.quad, self.x, self.y, 0+math.rad(self.data.rot_angle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 		else
-			love.graphics.draw(self.image, self.data.quad, self.x, self.y, math.rad(self.moveDir+90), self.scale.x, self.scale.y, self.offset.x, self.offset.y)
+			love.graphics.draw(self.image, self.data.quad, self.x, self.y, math.rad(self.moveDir+90)+math.rad(self.data.rot_angle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 		end
 		love.graphics.setBlendMode(initBlendMode)
 		love.graphics.setColor(255, 255, 255, 255)
@@ -156,9 +167,22 @@ end
 function CreateShotA1(x,y,speed,dir,graphic,delay)
 	local index = findDeadBullet()
 	local obj = shot_all[index]
-	obj:_init(x,y)
+	obj:_init(x,y,"enemy")
 	obj.speed = speed
 	obj.moveDir = dir
+	obj.graphic = graphic
+	obj.delay = delay
+	return obj
+end
+
+function CreateShotA2(x,y,speed,dir,acceleration,maxspeed,graphic,delay)
+	local index = findDeadBullet()
+	local obj = shot_all[index]
+	obj:_init(x,y,"enemy")
+	obj.speed = speed
+	obj.moveDir = dir
+	obj.acceleration = acceleration
+	obj.maxspeed = maxspeed
 	obj.graphic = graphic
 	obj.delay = delay
 	return obj
@@ -167,13 +191,12 @@ end
 function CreatePlayerShotA1(x,y,speed,dir,dmg,pene,graphic)
 	local index = findDeadBullet()
 	local obj = shot_all[index]
-	obj:_init(x,y)
+	obj:_init(x,y,"player")
 	obj.speed = speed
 	obj.moveDir = dir
 	obj.graphic = graphic
 	obj.damage = dmg
 	obj.penetration = pene
-	obj.source = "player"
 	return obj
 end
 function findDeadBullet()

@@ -41,14 +41,15 @@ function ObjImage:_init(x,y,filepath,initX,initY,width,height)
 	self.scale.x = 1
 	self.scale.y = 1
 	self.rotAngle = 0
-	self.offset = {}
+	self.offset_auto = {}
 	if self.quad then
-		self.offset.x = self.rect.width/2
-		self.offset.y = self.rect.height/2
+		self.offset_auto.x = self.rect.width/2
+		self.offset_auto.y = self.rect.height/2
 	elseif self.image then
-		self.offset.x = self.image:getWidth()/2
-		self.offset.y = self.image:getHeight()/2
+		self.offset_auto.x = self.image:getWidth()/2
+		self.offset_auto.y = self.image:getHeight()/2
 	end
+	self.offset_manual = {x = 0, y = 0}
 	self.blendMode = "alpha"
 	self.color = {
 		red = 255,
@@ -84,9 +85,9 @@ function ObjImage:setAnim(name)
 		self.animCurrent = name
 		self.animList[name]:gotoFrame(1)
 		self.animList[name]:resume()
-		self.offset.x, self.offset.y = self.animList[name]:getDimensions()
-		self.offset.x = self.offset.x/2
-		self.offset.y = self.offset.y/2
+		self.offset_auto.x, self.offset_auto.y = self.animList[name]:getDimensions()
+		self.offset_auto.x = self.offset_auto.x/2
+		self.offset_auto.y = self.offset_auto.y/2
 	end
 end
 function ObjImage:addAnim(name,onLoop,duration,...)
@@ -125,8 +126,25 @@ function ObjImage:setScaleXY(scaleX,scaleY)
 	self.scale.y = scaleY
 end
 
+function ObjImage:setOffsetX(offset)
+	self.offset_manual.x = offset
+end
+
+function ObjImage:setOffsetY(offset)
+	self.offset_manual.y = offset
+end
+
+function ObjImage:setOffsetXY(offsetX,offsetY)
+	self.offset_manual.x = offsetX
+	self.offset_manual.y = offsetY
+end
+
 function ObjImage:setVisible(bool)
 	self.visible = bool
+end
+
+function ObjImage:getVisible()
+	return self.visible
 end
 
 function ObjImage:setBlendMode(blend)
@@ -168,12 +186,12 @@ function ObjImage:draw()
 	love.graphics.setBlendMode(self.blendMode)
 	love.graphics.setColor(self.color.red, self.color.green, self.color.blue, self.alpha)
 	if self.quad then
-		love.graphics.draw(self.image, self.quad, self.x, self.y, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset.x, self.offset.y)
+		love.graphics.draw(self.image, self.quad, self.x, self.y, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	elseif self.animCurrent then
 		local animCurrent = self.animCurrent
-		if animCurrent then self.animList[animCurrent]:draw(self.image, self.x, self.y, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset.x, self.offset.y) end
+		if animCurrent then self.animList[animCurrent]:draw(self.image, self.x, self.y, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y) end
 	elseif self.image then
-		love.graphics.draw(self.image, self.x, self.y, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset.x, self.offset.y)
+		love.graphics.draw(self.image, self.x, self.y, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	end
 	love.graphics.setBlendMode(initBlendMode)
 	love.graphics.setColor(255, 255, 255, 255)

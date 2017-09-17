@@ -1,4 +1,4 @@
-player = ObjPlayer(love.graphics.getWidth()/2,love.graphics.getHeight()-100,"img/Reimu.png")
+player = ObjPlayer(love.graphics.getWidth()/2,love.graphics.getHeight()-100,"img/reimu_player.png")
 
 function testPlayerReimu()
 	player:setGrid(64, 96, player.image:getWidth(), player.image:getHeight())
@@ -6,6 +6,7 @@ function testPlayerReimu()
 	player:addAnim("left",'pauseAtEnd',0.07,'1-8',2)
 	player:addAnim("right",'pauseAtEnd',0.07,'1-8',3)
 	player:setAnim("idle")
+	player:setShotDefinition(require "script/shot/TestShot_Reimu")
 	-- player:setScaleXY(1.5,1.5)
 
 	player:startTask(player.shot)
@@ -20,8 +21,8 @@ function player.shot(self)
 			count = 0
 		end
 		if count == 2 then
-			test_shot(self:getX()-12,self:getY()-5)
-			test_shot(self:getX()+12,self:getY()-5)
+			test_shot(self:getX()-14,self:getY()-10)
+			test_shot(self:getX()+14,self:getY()-10)
 			count = -1
 		end
 		if count >= 0 then count = count + 1 end
@@ -30,7 +31,7 @@ function player.shot(self)
 end
 
 function test_shot(x,y)
-	local obj = CreatePlayerShotA1(x,y,30,270,5,1,"arrowhead_red")
+	local obj = CreatePlayerShotA1(x,y,30,270,5,1,"amulet_red")
 	obj:setScaleXY(1.0,1.0)
 end
 
@@ -52,6 +53,7 @@ function player.sealBomb(self,rot)
 	local angle_acc = 0.04
 	local alpha = 0
 
+	objSpell:setBlendMode("add")
 	objSpell:setDamage(2)
 	self:setInvincibility(300)
 

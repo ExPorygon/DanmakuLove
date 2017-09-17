@@ -9,6 +9,7 @@ function love.load()
 	require "lib/function_wait"
 	require "lib/function_math"
 	require "lib/function_misc"
+	require "lib/function_collision"
 	require "class/Player"
 	require "class/Shot"
 	require "class/Boss"
@@ -45,7 +46,7 @@ end
 
 function love.keypressed(key)
 	if key == 'escape' then love.event.quit() end
-	if key == 'k' then DeleteAllShot() end
+	if key == 'd' then DeleteAllShot() end
 end
 
 function love.update(dt)
@@ -63,7 +64,7 @@ function love.draw()
 	-- love.graphics.print("Memory Usage:"..torstring(collectgarbage("count")/1000),5,15)
 	love.graphics.print("Boss Life:"..tostring(objBoss:getLife()),objBoss:getX()-60,objBoss:getY()-100)
 	love.graphics.print("Player State:"..player.state,5,45)
-	love.graphics.print("Player invincibility:"..player.invincibility,5,55)
+	love.graphics.print("Player Invincibility:"..player.invincibility,5,55)
 
 	draw_layers()
 end

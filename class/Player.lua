@@ -25,6 +25,7 @@ function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
 	self.hitbox = 4
 	self.slowSpeed = 1.9
 	self.fastSpeed = 6
+	self.shotDefinition = {}
 
 	self.isBombing = false
 
@@ -42,6 +43,14 @@ function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
 
 	self:setDrawPriority(41)
 
+end
+
+function ObjPlayer:setShotDefinition(ShotDefinition) --needs a ShotDefinition object
+	self.ShotDefinition = ShotDefinition
+end
+
+function ObjPlayer:getShotDefinition(ShotDefinition)
+	return self.ShotDefinition
 end
 
 function ObjPlayer:setInvincibility(iframes)
@@ -242,12 +251,12 @@ function ObjPlayer:draw()
 	love.graphics.setBlendMode(self.blendMode)
 	love.graphics.setColor(self.color.red, self.color.green, self.color.blue, self.alpha)
 	if self.quad then
-		love.graphics.draw(self.image, self.quad, self.x, self.y, self.rotAngle, self.scale.x, self.scale.y, self.offset.x, self.offset.y)
+		love.graphics.draw(self.image, self.quad, self.x, self.y, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	elseif self.animCurrent then
 		local animCurrent = self.animCurrent
-		if animCurrent then self.animList[animCurrent]:draw(self.image, self.x, self.y, self.rotAngle, self.scale.x, self.scale.y, self.offset.x, self.offset.y) end
+		if animCurrent then self.animList[animCurrent]:draw(self.image, self.x, self.y, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y) end
 	elseif self.image then
-		love.graphics.draw(self.image, self.x, self.y, self.rotAngle, self.scale.x, self.scale.y, self.offset.x, self.offset.y)
+		love.graphics.draw(self.image, self.x, self.y, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	end
 	love.graphics.setBlendMode(initBlendMode)
 	love.graphics.setColor(255, 255, 255, 255)
