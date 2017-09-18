@@ -13,8 +13,16 @@ function love.load()
 	require "class/Player"
 	require "class/Shot"
 	require "class/Boss"
+	require "class/Sound"
 	require "class/AttackPattern"
 	require "class/System"
+
+	system = ObjSystem()
+
+	ObjSound("shot1","sound/shot1.wav")
+	ObjSound("pshot","sound/pshot.wav")
+	ObjSound("shot2","sound/shot2.wav")
+	ObjSound("spell","sound/spell.wav")
 
 	require "script/player/TestPlayer_Reimu"
 	-- require "script/eternity/TestEnemy_Eternity"
@@ -27,7 +35,6 @@ function love.load()
 	-- testImage()
 	-- testEnemyEternity()
 	testBossEternity()
-
 
 end
 
