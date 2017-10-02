@@ -13,7 +13,7 @@ setmetatable(ObjEnemy, {
 })
 
 function ObjEnemy:_init(x,y,life,filepath,initX,initY,width,height)
-	ObjMove._init(self,x,y,filepath,initX,initY,width,height)
+	ObjMove._init(self,x,y,40,filepath,initX,initY,width,height)
 
 	-- Default Values
 	self.type = "enemy"
@@ -21,7 +21,6 @@ function ObjEnemy:_init(x,y,life,filepath,initX,initY,width,height)
 	self.hitboxToShot = 48
 	self.hitboxToPlayer = 36
 	self.invincibility = 0
-	self:setDrawPriority(50)
 
 end
 

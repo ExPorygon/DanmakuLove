@@ -13,7 +13,7 @@ setmetatable(ObjSpell, {
 })
 
 function ObjSpell:_init(x,y,filepath,initX,initY,width,height)
-	ObjMove._init(self,x,y,filepath,initX,initY,width,height)
+	ObjMove._init(self,x,y,40,filepath,initX,initY,width,height)
 
 	-- Default Values
 	self.type = "spell"

@@ -1,4 +1,4 @@
-player = ObjPlayer(love.graphics.getWidth()/2,love.graphics.getHeight()-100,"img/reimu_player.png")
+player = ObjPlayer(system:getCenterX(),system:getHeight()-50,"img/reimu_player.png")
 
 function testPlayerReimu()
 	player:setGrid(64, 96, player.image:getWidth(), player.image:getHeight())

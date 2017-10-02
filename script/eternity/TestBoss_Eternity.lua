@@ -1,4 +1,4 @@
-objBoss = ObjBoss(640,200,"img/eternity.png",0,0,164,212)
+objBoss = ObjBoss(system:getCenterX(),200,"img/eternity.png",0,0,164,212)
 
 function testBossEternity()
 	local nonspell_1 = require "script/eternity/nonspell_1"

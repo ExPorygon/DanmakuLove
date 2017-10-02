@@ -14,7 +14,7 @@ setmetatable(ObjImage, {
 })
 
 
-function ObjImage:_init(x,y,filepath,initX,initY,width,height)
+function ObjImage:_init(x,y,priority,filepath,initX,initY,width,height)
 	ObjBase._init(self)
 	self.type = "image"
 	self.x = x
@@ -51,15 +51,19 @@ function ObjImage:_init(x,y,filepath,initX,initY,width,height)
 	end
 	self.offset_manual = {x = 0, y = 0}
 	self.blendMode = "alpha"
-	self.color = {
-		red = 255,
-		green = 255,
-		blue = 255
-	}
+	self.color = {red = 255, green = 255, blue = 255}
 	self.alpha = 255
 	self.visible = true
-	self.drawPriority = 60
+	if priority then self.drawPriority = priority else self.drawPriority = 60 end
 	self:setDrawPriority(self.drawPriority)
+	if self:checkPriorityRange() then
+		self.x = x + system.screen.left
+		self.y = y + system.screen.top
+	end
+end
+
+function ObjImage:checkPriorityRange()
+	return self:getDrawPriority() > system:getGameDrawPriorityMin() and self:getDrawPriority() < system:getGameDrawPriorityMax()
 end
 
 function ObjImage:setDrawPriority(num)
@@ -74,6 +78,10 @@ function ObjImage:setDrawPriority(num)
 	end
 	self.drawPriority = num
 	table.insert(listDrawLayer[self.drawPriority],self)
+end
+
+function ObjImage:getDrawPriority(num)
+	return self.drawPriority
 end
 
 function ObjImage:setGrid(frameWidth, frameHeight, imageWidth, imageHeight, left, top, border)
@@ -97,8 +105,13 @@ function ObjImage:addAnim(name,onLoop,duration,...)
 end
 
 function ObjImage:setPosition(x,y)
-	self.x = x
-	self.y = y
+	if self:checkPriorityRange() then
+		self.x = x + system.screen.left
+		self.y = y + system.screen.top
+	else
+		self.x = x
+		self.y = y
+	end
 end
 
 function ObjImage:setAngle(angle)
@@ -162,19 +175,18 @@ function ObjImage:setColor(red,green,blue)
 end
 
 function ObjImage:getX()
-	return self.x
+	return self.x - system.screen.left
 end
 
 function ObjImage:getY()
-	return self.y
+	return self.y - system.screen.top
 end
 
 function ObjImage:getPosition()
-	return self.x, self.y
+	return self.x - system.screen.left, self.y - system.screen.top
 end
 
 function ObjImage:update(dt)
-	-- print(self.animList["idle"])
 	if self.isDelete then return end
 	local animCurrent = self.animCurrent
 	if animCurrent then self.animList[animCurrent]:update(dt) end

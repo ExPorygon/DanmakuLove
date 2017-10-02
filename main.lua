@@ -10,14 +10,16 @@ function love.load()
 	require "lib/function_math"
 	require "lib/function_misc"
 	require "lib/function_collision"
+
+	require "class/System"
+	system = ObjSystem(73,32,841,928)
+
 	require "class/Player"
 	require "class/Shot"
 	require "class/Boss"
 	require "class/Sound"
+	require "class/Text"
 	require "class/AttackPattern"
-	require "class/System"
-
-	system = ObjSystem()
 
 	ObjSound("shot1","sound/shot1.wav")
 	ObjSound("pshot","sound/pshot.wav")
@@ -28,13 +30,16 @@ function love.load()
 	-- require "script/eternity/TestEnemy_Eternity"
 	require "script/eternity/TestBoss_Eternity"
 
+	system:initFrame()
+	system:initHUD()
+
 	sHeight = love.graphics.getHeight()
 	sWidth =  love.graphics.getWidth()
 
 	testPlayerReimu()
 	-- testImage()
 	-- testEnemyEternity()
-	testBossEternity()
+	-- testBossEternity()
 
 end
 
@@ -58,20 +63,20 @@ end
 
 function love.update(dt)
 	update_objects(shot_all,dt)
-
+	system:update()
 	player:update(dt)
 	-- testImg:update(dt)
 	-- objEnemy:update(dt)
-	objBoss:update(dt)
+	-- objBoss:update(dt)
 	collectgarbage("step",2)
 end
 
 function love.draw()
 	love.graphics.print("FPS:"..tostring(love.timer.getFPS()),5,5)
 	-- love.graphics.print("Memory Usage:"..torstring(collectgarbage("count")/1000),5,15)
-	love.graphics.print("Boss Life:"..tostring(objBoss:getLife()),objBoss:getX()-60,objBoss:getY()-100)
-	love.graphics.print("Player State:"..player.state,5,45)
-	love.graphics.print("Player Invincibility:"..player.invincibility,5,55)
+	-- love.graphics.print("Boss Life:"..tostring(objBoss:getLife()),objBoss:getX(),objBoss:getY()-100)
+	-- love.graphics.print("Player State:"..player.state,5,45)
+	-- love.graphics.print("Player Invincibility:"..player.invincibility,5,55)
 
 	draw_layers()
 end

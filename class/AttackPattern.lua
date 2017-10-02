@@ -54,7 +54,6 @@ function ObjAttackPattern:update(dt)
 	-- if self.isDelete then return end
 	self:resumeAllTasks()
 
-	-- self.life = self.boss.life
 	self.timer = self.timer - 1/60
 
 	if self.timer <= 0 then self:finish() end

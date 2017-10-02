@@ -12,8 +12,8 @@ setmetatable(ObjMove, {
 	end,
 })
 
-function ObjMove:_init(x,y,filepath,initX,initY,width,height)
-	ObjImage._init(self,x,y,filepath,initX,initY,width,height)
+function ObjMove:_init(x,y,priority,filepath,initX,initY,width,height)
+	ObjImage._init(self,x,y,priority,filepath,initX,initY,width,height)
 
 	-- Default Values
 	self.type = "move"
@@ -22,7 +22,7 @@ function ObjMove:_init(x,y,filepath,initX,initY,width,height)
 	self.acc = 0
 	self.maxspeed = 0
 	self.angvel = 0
-	self.IsMove = false
+	self.isMoving = false
 	self.destX = 0
 	self.destY = 0
 end
@@ -34,7 +34,7 @@ function ObjMove:setDestAtSpeed(x,y,speed)
 	self.moveDir = AngleBetweenPoints(self.x,self.y,x,y)
 	self.acc = 0
 	self.angvel = 0
-	self.IsMove = true
+	self.isMoving = true
 end
 
 function ObjMove:setSpeed(speed)
@@ -81,13 +81,13 @@ function ObjMove:update(dt)
 	end
 	self.x = self.x + (self.speed * 60 * math.cos(math.rad(self.moveDir)) * dt)
 	self.y = self.y + (self.speed * 60 * math.sin(math.rad(self.moveDir)) * dt)
-	if self.IsMove then
+	if self.isMoving then
 		if math.dist(self.x,self.y,self.destX,self.destY) <= self.speed then
 			self.x = self.destX
 			self.y = self.destY
 			self.speed = 0
 			self.moveDir = 0
-			self.IsMove = false
+			self.isMoving = false
 		end
 	end
 end

@@ -1,5 +1,7 @@
-#Ignore 'old' directory
+#Ignore directories
 old/
+pending/
+font/dev/
 
 #Ignore thumbnails created by windows
 Thumbs.db
@@ -33,4 +35,4 @@ Thumbs.db
 *.dll
 *.lib
 *.sbr
-pending/
+

@@ -16,12 +16,12 @@ setmetatable(ObjPlayer, {
 })
 
 function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
-	ObjMove._init(self,x,y,filepath,initX,initY,width,height)
+	ObjMove._init(self,x,y,41,filepath,initX,initY,width,height)
 
 	-- Default Values
 	self.type = "player"
 	self.life = 2
-	self.bomb = 2
+	self.spell = 2
 	self.hitbox = 4
 	self.slowSpeed = 1.9
 	self.fastSpeed = 6
@@ -40,8 +40,6 @@ function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
 	self.respawn_frames_init = 60
 	self.respawn_frames = self.respawn_frames_init
 	self.state = "normal"
-
-	self:setDrawPriority(41)
 
 end
 
@@ -90,8 +88,8 @@ function ObjPlayer:update(dt)
 	end
 
 	if self.state == "respawn" then
-		self.x = love.graphics.getWidth()/2
-		self.y = love.graphics.getHeight() - 100 + 140*self.respawn_frames/self.respawn_frames_init
+		self.x = system:getCenterX()+system.screen.left
+		self.y = system:getHeight() - 50 + 140*self.respawn_frames/self.respawn_frames_init
 		if self.respawn_frames <= 0 then
 			self.state = "normal"
 			self.respawn_frames = self.respawn_frames_init
@@ -102,6 +100,7 @@ function ObjPlayer:update(dt)
 	if self.state ~= "normal" and self.state ~= "hit" then self.bombAllow = false else self.bombAllow = true end
 
 	if love.keyboard.isDown("x") and not self.isBombing and self.state == "normal" then
+		self.spell = self.spell - 1
 		self:startNamedTask(self.bomb,"bomb")
 		self.isBombing = true
 	end
@@ -189,9 +188,8 @@ function ObjPlayer:collision()
 end
 
 function ObjPlayer.explodeEffect(self)
-	local obj = ObjImage(self.x,self.y,"img/explode.png")
+	local obj = ObjImage(self:getX(),self:getY(),60,"img/explode.png")
 	obj:setBlendMode("add")
-	obj:setDrawPriority(60)
 
 	local alpha = 150
 	local scale = 0
@@ -208,13 +206,11 @@ function ObjPlayer.explodeEffect(self)
 end
 
 function ObjPlayer.renderHitbox(self,rot)
-	local obj = ObjImage(0,0,"img/hitbox.png")
+	local obj = ObjImage(0,0,51,"img/hitbox.png")
 	local count = 0
 	local alpha = 0
 	local scale = 0
 	local focusStart = true
-
-	obj:setDrawPriority(51)
 
 	while true do
 		if self.state == "down" then obj:setVisible(false) else obj:setVisible(true) end

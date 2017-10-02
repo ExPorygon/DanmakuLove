@@ -21,15 +21,15 @@ function ObjBoss:_init(x,y,filepath,initX,initY,width,height)
 	self.effect_color_list = {}
 	self.circleColor = "Red"
 	self.auraColor = {1,1,1}
+	self.isDelete = true
 
 	self.eventList = {}
 	for i = 1, 20 do self.eventList[i] = {} end
 
-
-
 end
 
 function ObjBoss:start()
+	self.isDelete = false
 	self.mainTask = coroutine.create(self.main)
 	coroutine.resume(self.mainTask,self)
 end
@@ -38,17 +38,16 @@ function ObjBoss.main(self)
 	for i = 1, #self.eventList do
 		for j = 1, #self.eventList[i] do
 			local event = self.eventList[i][j]
+			system.current_event = event
 			self.eventCurrent = event
 			self:setLife(event.life)
 			event.boss = self
 			event:startTask(event.start)
-			print("test")
 			coroutine.yield()
 		end
 	end
 	self.eventCurrent = nil
 	self:delete()
-	print("END")
 end
 
 function ObjBoss:addEvent(num,event) --Usually an attack pattern object, can also be dialogue events as well

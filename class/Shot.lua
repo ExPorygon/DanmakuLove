@@ -49,7 +49,8 @@ for i = 1, 5000 do
 end
 
 function ObjShot:_init(x,y,source)
-	ObjMove._init(self,x,y)
+	if source == "enemy" then ObjMove._init(self,x,y,50) end
+	if source == "player" then ObjMove._init(self,x,y,40) end
 
 	-- Default Values
 	self.type = "shot"
@@ -62,8 +63,6 @@ function ObjShot:_init(x,y,source)
 	if source == "enemy" then self.definition = ShotData_Enemy end
 	if source == "player" then self.definition = player:getShotDefinition() end
 	self.image = self.definition.image
-	if source == "enemy" then self:setDrawPriority(50) end
-	if source == "player" then self:setDrawPriority(40) end
 
 end
 
@@ -158,7 +157,7 @@ end
 -- end
 
 function ObjShot:bulletBreakEffect()
-	objBreak = ObjImage(self.x,self.y,"img/bullet_break.png")
+	objBreak = ObjImage(self.x,self.y,50,"img/bullet_break.png")
 	objBreak:setGrid(64, 64, objBreak.image:getWidth(), objBreak.image:getHeight())
 	objBreak:addAnim("break",'pauseAtEnd',0.05,'1-8',1)
 	objBreak:setAnim("break")
@@ -199,6 +198,7 @@ function CreatePlayerShotA1(x,y,speed,dir,dmg,pene,graphic)
 	obj.penetration = pene
 	return obj
 end
+
 function findDeadBullet()
 	local x = 0
 	while true do --search table til you find an index that is true.
