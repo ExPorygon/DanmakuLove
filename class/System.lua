@@ -53,6 +53,7 @@ function ObjSystem:initHUD()
 	local spell = ObjText(900,340,81,"Eurostile_HUD.fnt","Spell: "..player.spell)
 	spell:setColor(64,255,64)
 	self.hud["spell"] = spell
+
 end
 
 function ObjSystem:initFrame()

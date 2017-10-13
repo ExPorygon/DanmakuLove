@@ -1,7 +1,11 @@
+#Ignore testing 'main.lua' files
+main_*
+
 #Ignore directories
 old/
 pending/
 font/dev/
+img/debug/
 
 #Ignore thumbnails created by windows
 Thumbs.db

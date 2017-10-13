@@ -1,4 +1,4 @@
-local objPattern = ObjAttackPattern(500,60)
+local objPattern = ObjAttackPattern(1400,60)
 local shot1 = system:getSoundObject("shot1")
 
 function objPattern.mainTask(self)

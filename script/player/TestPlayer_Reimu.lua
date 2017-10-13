@@ -1,4 +1,4 @@
-player = ObjPlayer(system:getCenterX(),system:getHeight()-50,"img/reimu_player.png")
+player = ObjPlayer(system:getCenterX(),system:getHeight()-100,"img/reimu_player.png")
 
 function testPlayerReimu()
 	player:setGrid(64, 96, player.image:getWidth(), player.image:getHeight())
@@ -31,7 +31,7 @@ function player.shot(self)
 end
 
 function test_shot(x,y)
-	local obj = CreatePlayerShotA1(x,y,30,270,5,1,"amulet_red")
+	local obj = CreatePlayerShotA1(x,y,30,270,10,1,"amulet_red")
 	obj:setScaleXY(1.0,1.0)
 end
 
@@ -40,12 +40,12 @@ function player.bomb(self)
 	player:startTask(player.sealBomb,1)
 	-- player:startTask(player.sealBomb,-1)
 
-	while isTaskAlive(task) do wait(1) end
-	player.isBombing = false
+	while isTaskAlive(task) do wait(1) end -- Keeps the task from ending and keeps player.isBombing from returning to false
+	-- player.isBombing = false
 end
 
 function player.sealBomb(self,rot)
-	local objSpell = ObjSpell(self.x,self.y,"img/bomb.png")
+	local objSpell = ObjSpell(self:getX(),self:getY(),"img/bomb.png")
 
 	local scale = 3.0
 	local angle = 0

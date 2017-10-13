@@ -89,7 +89,7 @@ function ObjPlayer:update(dt)
 
 	if self.state == "respawn" then
 		self.x = system:getCenterX()+system.screen.left
-		self.y = system:getHeight() - 50 + 140*self.respawn_frames/self.respawn_frames_init
+		self.y = system:getHeight() - 100 + 140*self.respawn_frames/self.respawn_frames_init+system.screen.top
 		if self.respawn_frames <= 0 then
 			self.state = "normal"
 			self.respawn_frames = self.respawn_frames_init
@@ -99,14 +99,14 @@ function ObjPlayer:update(dt)
 	if self.state ~= "normal" then self.shotAllow = false else self.shotAllow = true end
 	if self.state ~= "normal" and self.state ~= "hit" then self.bombAllow = false else self.bombAllow = true end
 
-	if love.keyboard.isDown("x") and not self.isBombing and self.state == "normal" then
+	if love.keyboard.isDown("x") and not self.isBombing and self.state == "normal" and self.spell > 0 then
 		self.spell = self.spell - 1
 		self:startNamedTask(self.bomb,"bomb")
 		self.isBombing = true
 	end
+	if not isTaskAlive(self.task.bomb) then self.isBombing = false end
 
 	self:resumeAllTasks()
-	-- if self.task.death_explosion then coroutine.resume(self.task.death_explosion) end
 end
 
 function ObjPlayer:move(dt)
@@ -120,30 +120,32 @@ function ObjPlayer:move(dt)
 	local Up = love.keyboard.isDown("up")
 	local Focus = love.keyboard.isDown("lshift")
 
+	local screen = {left = 10, top = 10, right = system.screen.right - system.screen.left - 10, bottom = system.screen.bottom - system.screen.top - 10}
+
 	if Focus then self.speed = self.slowSpeed else self.speed = self.fastSpeed end
 
-	if Right and Down and self.x < sWidth and self.y < sHeight then
+	if Right and Down and self.x < screen.right and self.y < screen.bottom then
 		self:setAnim("right")
 		self.x = self.x + self.speed * math.cos(math.rad(45)) * 100 * dt
 		self.y = self.y + self.speed * math.sin(math.rad(45)) * 100 * dt
 		diag = true
 	end
 
-	if Right and Up and self.x < sWidth and self.y > 0 then
+	if Right and Up and self.x < screen.right and self.y > screen.top then
 		self:setAnim("right")
 		self.x = self.x + self.speed * math.cos(math.rad(45)) * 100 * dt
 		self.y = self.y - self.speed * math.sin(math.rad(45)) * 100 * dt
 		diag = true
 	end
 
-	if Left and Down and self.x > 0 and self.y < sHeight then
+	if Left and Down and self.x > screen.left and self.y < screen.bottom then
 		self:setAnim("left")
 		self.x = self.x - self.speed * math.cos(math.rad(45)) * 100 * dt
 		self.y = self.y + self.speed * math.sin(math.rad(45)) * 100 * dt
 		diag = true
 	end
 
-	if Left and Up and self.x > 0 and self.y > 0 then
+	if Left and Up and self.x > screen.left and self.y > screen.top then
 		self:setAnim("left")
 		self.x = self.x - self.speed * math.cos(math.rad(45)) * 100 * dt
 		self.y = self.y - self.speed * math.sin(math.rad(45)) * 100 * dt
@@ -151,19 +153,19 @@ function ObjPlayer:move(dt)
 	end
 
 	if not diag then
-		if Right and self.x < sWidth then
+		if Right and self.x < screen.right then
 			self:setAnim("right")
 			self.x = self.x + (self.speed * 100 * dt)
 		end
-		if Left and self.x > 0 then
+		if Left and self.x > screen.left then
 			self:setAnim("left")
 			self.x = self.x - (self.speed * 100 * dt)
 		end
 
-		if Down and self.y < sHeight then
+		if Down and self.y < screen.bottom then
 			self.y = self.y + (self.speed * 100 * dt)
 		end
-		if Up and self.y > 0 then
+		if Up and self.y > screen.top then
 			self.y = self.y - (self.speed * 100 * dt)
 		end
 	end
@@ -243,16 +245,24 @@ end
 
 function ObjPlayer:draw()
 	if self.isDelete or not self.visible or self.state == "down" then return end
+
+	local drawX,drawY
+	if self:checkPriorityRange() then
+		drawX, drawY = self.x + system.screen.left, self.y + system.screen.top
+	else
+		drawX, drawY = self.x, self.y
+	end
+
 	local initBlendMode = love.graphics.getBlendMode()
 	love.graphics.setBlendMode(self.blendMode)
 	love.graphics.setColor(self.color.red, self.color.green, self.color.blue, self.alpha)
 	if self.quad then
-		love.graphics.draw(self.image, self.quad, self.x, self.y, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
+		love.graphics.draw(self.image, self.quad, drawX, drawY, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	elseif self.animCurrent then
 		local animCurrent = self.animCurrent
-		if animCurrent then self.animList[animCurrent]:draw(self.image, self.x, self.y, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y) end
+		if animCurrent then self.animList[animCurrent]:draw(self.image, drawX, drawY, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y) end
 	elseif self.image then
-		love.graphics.draw(self.image, self.x, self.y, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
+		love.graphics.draw(self.image, drawX, drawY, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	end
 	love.graphics.setBlendMode(initBlendMode)
 	love.graphics.setColor(255, 255, 255, 255)

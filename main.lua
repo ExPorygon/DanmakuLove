@@ -15,6 +15,7 @@ function love.load()
 	system = ObjSystem(73,32,841,928)
 
 	require "class/Player"
+	require "class/SpriteBatch"
 	require "class/Shot"
 	require "class/Boss"
 	require "class/Sound"
@@ -37,23 +38,9 @@ function love.load()
 	sWidth =  love.graphics.getWidth()
 
 	testPlayerReimu()
-	-- testImage()
 	-- testEnemyEternity()
-	-- testBossEternity()
+	testBossEternity()
 
-end
-
-function testImage()
-	testImg = ObjMove(600,200,"img/Star.png")
-	testImg:setBlendMode("add")
-	testImg:setScaleXY(0.2,0.2)
-	testImg:setAlpha(150)
-	testImg:setColor(32,255,255)
-	-- testImg:setSpeed(0)
-	-- testImg:setDirection(90)
-	-- testImg:setAcceleration(0.01)
-	-- testImg:setMaxSpeed(2.0)
-	-- testImg:setAngularVelocity(0.3)
 end
 
 function love.keypressed(key)
@@ -63,22 +50,19 @@ end
 
 function love.update(dt)
 	update_objects(shot_all,dt)
+	bulletBreak:update(dt)
 	system:update()
 	player:update(dt)
 	-- testImg:update(dt)
 	-- objEnemy:update(dt)
-	-- objBoss:update(dt)
+	objBoss:update(dt)
 	collectgarbage("step",2)
 end
 
 function love.draw()
-	love.graphics.print("FPS:"..tostring(love.timer.getFPS()),5,5)
-	-- love.graphics.print("Memory Usage:"..torstring(collectgarbage("count")/1000),5,15)
-	-- love.graphics.print("Boss Life:"..tostring(objBoss:getLife()),objBoss:getX(),objBoss:getY()-100)
-	-- love.graphics.print("Player State:"..player.state,5,45)
-	-- love.graphics.print("Player Invincibility:"..player.invincibility,5,55)
-
 	draw_layers()
+	-- love.graphics.print("Boss Life:"..tostring(objBoss:getLife()),1100,700)
+	love.graphics.print("FPS:"..tostring(love.timer.getFPS()),1230,940)
 end
 
 function draw_layers()

@@ -57,7 +57,7 @@ function ObjAttackPattern:update(dt)
 	self.timer = self.timer - 1/60
 
 	if self.timer <= 0 then self:finish() end
-	if self.boss.life <= 0 then self:finish() end
+	if self.boss:getLife() <= 0 then self:finish() end
 
 	if player.isBombing and self.bombSwitch then self.bomb_num = self.bomb_num + 1 self.bombSwitch = false
 	elseif not player.isBombing then self.bombSwitch = true end
@@ -66,6 +66,7 @@ function ObjAttackPattern:update(dt)
 end
 
 function ObjAttackPattern:finish()
+	self.boss:setLife(0)
 	self:delete()
 	coroutine.resume(self.boss.mainTask)
 end

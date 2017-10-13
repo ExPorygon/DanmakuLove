@@ -42,6 +42,7 @@ function ObjImage:_init(x,y,priority,filepath,initX,initY,width,height)
 	self.scale.y = 1
 	self.rotAngle = 0
 	self.offset_auto = {}
+	-- self.offset_center = true
 	if self.quad then
 		self.offset_auto.x = self.rect.width/2
 		self.offset_auto.y = self.rect.height/2
@@ -56,13 +57,10 @@ function ObjImage:_init(x,y,priority,filepath,initX,initY,width,height)
 	self.visible = true
 	if priority then self.drawPriority = priority else self.drawPriority = 60 end
 	self:setDrawPriority(self.drawPriority)
-	if self:checkPriorityRange() then
-		self.x = x + system.screen.left
-		self.y = y + system.screen.top
-	end
 end
 
 function ObjImage:checkPriorityRange()
+	-- if self.type == "spritebatch" or self.type == "image" then return false end
 	return self:getDrawPriority() > system:getGameDrawPriorityMin() and self:getDrawPriority() < system:getGameDrawPriorityMax()
 end
 
@@ -84,18 +82,18 @@ function ObjImage:getDrawPriority(num)
 	return self.drawPriority
 end
 
-function ObjImage:setGrid(frameWidth, frameHeight, imageWidth, imageHeight, left, top, border)
-	self.grid = anim8.newGrid(64, 96, self.image:getWidth(), self.image:getHeight())
+function ObjImage:setGrid(frameWidth, frameHeight, imageWidth, imageHeight)
+	self.grid = anim8.newGrid(frameWidth, frameHeight, self.image:getWidth(), self.image:getHeight())
+	-- self.offset_center = true
+	self.offset_auto.x, self.offset_auto.y = frameWidth, frameHeight
+	self.offset_auto.x = self.offset_auto.x/2
+	self.offset_auto.y = self.offset_auto.y/2
 end
-
 function ObjImage:setAnim(name)
 	if self.animCurrent ~= name then
 		self.animCurrent = name
 		self.animList[name]:gotoFrame(1)
 		self.animList[name]:resume()
-		self.offset_auto.x, self.offset_auto.y = self.animList[name]:getDimensions()
-		self.offset_auto.x = self.offset_auto.x/2
-		self.offset_auto.y = self.offset_auto.y/2
 	end
 end
 function ObjImage:addAnim(name,onLoop,duration,...)
@@ -103,15 +101,32 @@ function ObjImage:addAnim(name,onLoop,duration,...)
 	local animation = anim8.newAnimation(frames, duration, onLoop)
 	self.animList[name] = animation
 end
+function ObjImage:getCurrentAnim()
+	return self.animCurrent
+end
+function ObjImage:getAnim(name)
+	return self.animList[name]
+end
+
+function ObjImage:setAutoOffsetEnable(bool) -- Enabled by default
+	-- self.offset_center = bool
+	if bool == true then
+		if self.quad then
+			self.offset_auto.x = self.rect.width/2
+			self.offset_auto.y = self.rect.height/2
+		elseif self.image then
+			self.offset_auto.x = self.image:getWidth()/2
+			self.offset_auto.y = self.image:getHeight()/2
+		end
+	elseif bool == false then
+		self.offset_auto.x = 0
+		self.offset_auto.y = 0
+	end
+end
 
 function ObjImage:setPosition(x,y)
-	if self:checkPriorityRange() then
-		self.x = x + system.screen.left
-		self.y = y + system.screen.top
-	else
-		self.x = x
-		self.y = y
-	end
+	self.x = x
+	self.y = y
 end
 
 function ObjImage:setAngle(angle)
@@ -175,15 +190,15 @@ function ObjImage:setColor(red,green,blue)
 end
 
 function ObjImage:getX()
-	return self.x - system.screen.left
+	return self.x
 end
 
 function ObjImage:getY()
-	return self.y - system.screen.top
+	return self.y
 end
 
 function ObjImage:getPosition()
-	return self.x - system.screen.left, self.y - system.screen.top
+	return self.x, self.y
 end
 
 function ObjImage:update(dt)
@@ -194,16 +209,24 @@ end
 
 function ObjImage:draw()
 	if self.isDelete or not self.visible then return end
+
+	local drawX,drawY
+	if self:checkPriorityRange() then
+		drawX, drawY = self.x + system.screen.left, self.y + system.screen.top
+	else
+		drawX, drawY = self.x, self.y
+	end
+
 	local initBlendMode = love.graphics.getBlendMode()
 	love.graphics.setBlendMode(self.blendMode)
 	love.graphics.setColor(self.color.red, self.color.green, self.color.blue, self.alpha)
 	if self.quad then
-		love.graphics.draw(self.image, self.quad, self.x, self.y, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
+		love.graphics.draw(self.image, self.quad, drawX, drawY, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	elseif self.animCurrent then
 		local animCurrent = self.animCurrent
-		if animCurrent then self.animList[animCurrent]:draw(self.image, self.x, self.y, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y) end
+		if animCurrent then self.animList[animCurrent]:draw(self.image, drawX, drawY, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y) end
 	elseif self.image then
-		love.graphics.draw(self.image, self.x, self.y, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
+		love.graphics.draw(self.image, drawX, drawY, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	end
 	love.graphics.setBlendMode(initBlendMode)
 	love.graphics.setColor(255, 255, 255, 255)
