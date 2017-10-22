@@ -2,7 +2,7 @@ local objPattern = ObjAttackPattern(1400,60)
 local shot1 = system:getSoundObject("shot1")
 
 function objPattern.mainTask(self)
-	objPattern:startTask(self.fire,40,60)
+	objPattern:startTask(self.fire,self,40,60)
 	-- objPattern:startTask(self.fire,10,15)
 end
 

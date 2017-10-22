@@ -3,9 +3,12 @@ local shot2 = system:getSoundObject("shot1")
 
 function objPattern.mainTask(self)
 	self.boss:setInvincibility(210)
-	wait(150)
-	objPattern:startTask(self.fire,50,90)
-	objPattern:startTask(self.fire,10,15)
+	objPattern:cutIn("TABLE","img/eternity_cut.png")
+	objPattern:startSpell(3000000)
+	wait(120)
+	objPattern:startTask(self.fire,self,50,90)
+	objPattern:startTask(self.fire,self,10,15)
+	objPattern:startTask(self.move,self)
 end
 
 function objPattern.fire(self,num,w)
@@ -16,6 +19,17 @@ function objPattern.fire(self,num,w)
 			CreateShotA1(self.boss:getX(),self.boss:getY(),2.5,dir+i*360/num,"arrowhead_aqua",10)
 		end
 		wait(w)
+	end
+end
+
+function objPattern.move(self)
+	while true do
+		self.boss:setDestAtWeight(self.boss:getX()+200,self.boss:getY()+50,10,5)
+		wait(180)
+		self.boss:setDestAtWeight(self.boss:getX()-400,self.boss:getY(),10,5)
+		wait(180)
+		self.boss:setDestAtWeight(self.boss:getX()+200,self.boss:getY()-50,10,5)
+		wait(180)
 	end
 end
 

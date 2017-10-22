@@ -27,6 +27,24 @@ function ObjMove:_init(x,y,priority,filepath,initX,initY,width,height)
 	self.destY = 0
 end
 
+function ObjMove:setDestAtWeight(x,y,weight,max_speed)
+	local function move(obj,x,y,weight,max_speed)
+		local distance = math.dist(self.x,self.y,x,y)
+		local angle = AngleBetweenPoints(self.x,self.y,x,y)
+		while distance > 1 do
+			local speed = distance/weight
+			if speed > max_speed then speed = max_speed end
+			obj:setX(self.x + math.cos(math.rad(angle))*speed)
+			obj:setY(self.y + math.sin(math.rad(angle))*speed)
+			distance = math.dist(self.x,self.y,x,y)
+			coroutine.yield()
+		end
+		obj:setPosition(x,y)
+	end
+
+	self:startNamedTask(move,"move",self,x,y,weight,max_speed)
+end
+
 function ObjMove:setDestAtSpeed(x,y,speed)
 	self.destX = x
 	self.destY = y
@@ -75,6 +93,7 @@ end
 
 function ObjMove:update(dt)
 	if self.isDelete then return end
+	self:resumeTask("move")
 	self.moveDir = self.moveDir + self.angvel * 60 * dt
 	if (self.acc > 0 and self.speed < self.maxspeed) or (self.acc < 0 and self.speed > self.maxspeed) then
 		self.speed = self.speed + self.acc * 60 * dt

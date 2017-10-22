@@ -85,6 +85,8 @@ function ObjShot:_init(x,y,source)
 	self.hitbox = 5
 	self.damage = 0
 	self.penetration = 0
+	self.isGrazed = false
+	self.grazeAmount = 1
 	self.source = source
 	if source == "enemy" then self.definition = ShotData_Enemy end
 	if source == "player" then self.definition = player:getShotDefinition() end

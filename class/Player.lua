@@ -5,6 +5,7 @@ ObjPlayer = {}
 ObjPlayer.__index = ObjPlayer
 
 spell_all = {}
+local graze = system:getSoundObject("graze")
 
 setmetatable(ObjPlayer, {
 	__index = ObjMove,
@@ -23,6 +24,7 @@ function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
 	self.life = 2
 	self.spell = 2
 	self.hitbox = 4
+	self.grazeHitbox = 40
 	self.slowSpeed = 1.9
 	self.fastSpeed = 6
 	self.shotDefinition = {}
@@ -58,8 +60,13 @@ end
 function ObjPlayer:update(dt)
 	self:move(dt)
 	if self:collision() == true then
-		self:startNamedTask(self.explodeEffect,"death_explosion")
+		self:startNamedTask(self.explodeEffect,"death_explosion",self)
 		self.state = "hit"
+	end
+
+	if self:graze() == true then
+		graze:play(0.5)
+		system.graze = system.graze + 1
 	end
 
 	if self.invincibility > 0 then
@@ -88,8 +95,8 @@ function ObjPlayer:update(dt)
 	end
 
 	if self.state == "respawn" then
-		self.x = system:getCenterX()+system.screen.left
-		self.y = system:getHeight() - 100 + 140*self.respawn_frames/self.respawn_frames_init+system.screen.top
+		self.x = system:getCenterX()
+		self.y = system:getScreenHeight() - 100 + 140*self.respawn_frames/self.respawn_frames_init+system.screen.top
 		if self.respawn_frames <= 0 then
 			self.state = "normal"
 			self.respawn_frames = self.respawn_frames_init
@@ -101,7 +108,7 @@ function ObjPlayer:update(dt)
 
 	if love.keyboard.isDown("x") and not self.isBombing and self.state == "normal" and self.spell > 0 then
 		self.spell = self.spell - 1
-		self:startNamedTask(self.bomb,"bomb")
+		self:startNamedTask(self.bomb,"bomb",self)
 		self.isBombing = true
 	end
 	if not isTaskAlive(self.task.bomb) then self.isBombing = false end
@@ -182,6 +189,20 @@ function ObjPlayer:collision()
 			if math.dist(shot.x,shot.y,self.x,self.y) < (self.hitbox + shot.hitbox) then
 				shot:delete()
 				if self.state == "normal" and self.invincibility <= 0 then
+					return true
+				end
+			end
+		end
+	end
+end
+
+function ObjPlayer:graze()
+	for i = 1, 5000 do
+		local shot = shot_all[i]
+		if shot.isDelete == false and shot.source == "enemy" and shot.isGrazed == false then
+			if math.dist(shot.x,shot.y,self.x,self.y) < (self.grazeHitbox + shot.hitbox) then
+				if self.state == "normal" and self.invincibility <= 0 then
+					shot.isGrazed = true
 					return true
 				end
 			end

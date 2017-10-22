@@ -1,4 +1,4 @@
-player = ObjPlayer(system:getCenterX(),system:getHeight()-100,"img/reimu_player.png")
+player = ObjPlayer(system:getCenterX(),system:getScreenHeight()-100,"img/reimu_player.png")
 
 function testPlayerReimu()
 	player:setGrid(64, 96, player.image:getWidth(), player.image:getHeight())
@@ -9,9 +9,9 @@ function testPlayerReimu()
 	player:setShotDefinition(require "script/shot/TestShot_Reimu")
 	-- player:setScaleXY(1.5,1.5)
 
-	player:startTask(player.shot)
-	player:startNamedTask(player.renderHitbox,"hitbox",1)
-	player:startNamedTask(player.renderHitbox,"hitbox_rev",-1)
+	player:startTask(player.shot,player)
+	player:startNamedTask(player.renderHitbox,"hitbox",player,1)
+	player:startNamedTask(player.renderHitbox,"hitbox_rev",player,-1)
 end
 
 function player.shot(self)
@@ -36,9 +36,9 @@ function test_shot(x,y)
 end
 
 function player.bomb(self)
-	local task = player:startTask(player.sealBomb,0)
-	player:startTask(player.sealBomb,1)
-	-- player:startTask(player.sealBomb,-1)
+	local task = player:startTask(player.sealBomb,player,0)
+	player:startTask(player.sealBomb,player,1)
+	-- player:startTask(player.sealBomb,player,-1)
 
 	while isTaskAlive(task) do wait(1) end -- Keeps the task from ending and keeps player.isBombing from returning to false
 	-- player.isBombing = false

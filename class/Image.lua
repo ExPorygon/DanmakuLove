@@ -124,6 +124,14 @@ function ObjImage:setAutoOffsetEnable(bool) -- Enabled by default
 	end
 end
 
+function ObjImage:setX(x)
+	self.x = x
+end
+
+function ObjImage:setY(y)
+	self.y = y
+end
+
 function ObjImage:setPosition(x,y)
 	self.x = x
 	self.y = y
@@ -152,6 +160,10 @@ end
 function ObjImage:setScaleXY(scaleX,scaleY)
 	self.scale.x = scaleX
 	self.scale.y = scaleY
+end
+
+function ObjImage:setWrap(horiz,vert)
+	self.image:setWrap(horiz,vert)
 end
 
 function ObjImage:setOffsetX(offset)

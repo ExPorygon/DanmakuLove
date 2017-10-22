@@ -47,7 +47,7 @@ function ObjBoss.initHUD(self)
 
 	self.HUD.lifebar_overlay = ObjImage(system:getCenterX()+30,60,79,"img/lifebar.png",169,71,686,50)
 	self.HUD.timer_bg = ObjImage(60,60,79,"img/timer_bg.png")
-	self.HUD.timer = ObjText(108,77,79,"Aldrich_HUD.fnt")
+	self.HUD.timer = ObjText(110,75,79,"Titillium_SemiBold_HUD.fnt")
 	self.HUD.name = ObjText(173,47,79,"Economica_HUD.fnt")
 	self.HUD.lifebar_num = ObjSpriteBatch(79,"img/lifebar_heart.png",20)
 
@@ -92,7 +92,7 @@ function ObjBoss:updateHUD()
 	if self.lifebar_fill < 1 then self.lifebar_fill = self.lifebar_fill + 1/60 end
 
 	self.HUD.lifebar.quad:setViewport(169,7,30+(686-30)*factor*self.lifebar_fill,50)
-	if self.eventCurrent then self.HUD.timer:setText(string.format("%0.0f",self.eventCurrent.timer)) end
+	if self.eventCurrent then self.HUD.timer:setText(string.format("%02d",self.eventCurrent.timer)) end
 
 	self.HUD.name:setText(self.name)
 	self.HUD.name:setColor(128,255,255)
@@ -124,7 +124,7 @@ function ObjBoss:start()
 		local lifebar = self.life[i]
 		if lifebar[#lifebar] and lifebar[#lifebar] > 0 then self.lifeCount = self.lifeCount + 1  end
 	end
-	self:startTask(self.initHUD)
+	self:startTask(self.initHUD,self)
 	self.mainTask = coroutine.create(self.main)
 	coroutine.resume(self.mainTask,self)
 end
@@ -142,7 +142,7 @@ function ObjBoss.main(self)
 			self.eventCurrent = event
 			-- self:setLife(event.life)
 			event.boss = self
-			event:startTask(event.start)
+			event:startTask(event.start,event)
 			coroutine.yield()
 		end
 	end

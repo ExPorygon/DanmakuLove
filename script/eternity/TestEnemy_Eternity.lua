@@ -5,7 +5,7 @@ function testEnemyEternity()
 end
 
 function objEnemy.mainTask(self)
-	objEnemy:startTask(self.fire,60,90)
+	objEnemy:startTask(self.fire,self,60,90)
 	-- objEnemy:startTask(self.fire,10,15)
 end
 

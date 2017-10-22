@@ -11,10 +11,10 @@ function love.load()
 	require "lib/function_misc"
 	require "lib/function_collision"
 
+	require "class/Base"
 	require "class/System"
 	system = ObjSystem(73,32,841,928)
 
-	require "class/Player"
 	require "class/SpriteBatch"
 	require "class/Shot"
 	require "class/Boss"
@@ -26,9 +26,10 @@ function love.load()
 	ObjSound("pshot","sound/pshot.wav")
 	ObjSound("shot2","sound/shot2.wav")
 	ObjSound("spell","sound/spell.wav")
+	ObjSound("graze","sound/graze.wav")
 
+	require "class/Player"
 	require "script/player/TestPlayer_Reimu"
-	-- require "script/eternity/TestEnemy_Eternity"
 	require "script/eternity/TestBoss_Eternity"
 
 	system:initFrame()
@@ -38,7 +39,6 @@ function love.load()
 	sWidth =  love.graphics.getWidth()
 
 	testPlayerReimu()
-	-- testEnemyEternity()
 	testBossEternity()
 
 end
@@ -53,15 +53,12 @@ function love.update(dt)
 	bulletBreak:update(dt)
 	system:update()
 	player:update(dt)
-	-- testImg:update(dt)
-	-- objEnemy:update(dt)
 	objBoss:update(dt)
 	collectgarbage("step",2)
 end
 
 function love.draw()
 	draw_layers()
-	-- love.graphics.print("Boss Life:"..tostring(objBoss:getLife()),1100,700)
 	love.graphics.print("FPS:"..tostring(love.timer.getFPS()),1230,940)
 end
 

@@ -55,16 +55,16 @@ function ObjBase:isDeleted()
 	return self.isDelete
 end
 
-function ObjBase:startNamedTask(task,name,...)
-	local coo = coroutine.create(task)
-	coroutine.resume(coo,self,...)
+function ObjBase:startNamedTask(func,name,...)
+	local coo = coroutine.create(func)
+	coroutine.resume(coo,...)
 	self.task[name] = coo
 	return coo
 end
 
-function ObjBase:startTask(task,...)
-	local coo = coroutine.create(task)
-	coroutine.resume(coo,self,...)
+function ObjBase:startTask(func,...)
+	local coo = coroutine.create(func)
+	coroutine.resume(coo,...)
 	table.insert(self.task,coo)
 	return coo
 end
@@ -75,5 +75,12 @@ function ObjBase:resumeAllTasks()
  -- 	end
 	for i,v in pairs(self.task) do
 		if coroutine.status(v) == "suspended" then coroutine.resume(v) end
+	end
+end
+
+function ObjBase:resumeTask(name)
+	local task = self.task[name]
+	if task then
+		if coroutine.status(task) == "suspended" then coroutine.resume(task) end
 	end
 end
