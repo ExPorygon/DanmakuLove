@@ -20,7 +20,7 @@ function ObjSound:_init(name,filepath,group)
 	self.source = love.audio.newSource(filepath, "static")
 	self.name = name
 	if group then self:setGroup(group) end
-	system.sound_list.ALL[name] = self
+	getSoundObjectList("ALL")[name] = self
 end
 
 function ObjSound:play(volume)
@@ -57,13 +57,14 @@ function ObjSound:setLooping(bool)
 end
 
 function ObjSound:setGroup(group)
-	if self.group then table.remove(system.sound_list[group],self.groupIndex) end
+	local sound_group = getSoundObjectList(group)
+	if self.group then table.remove(sound_group,self.groupIndex) end
 	self.group = group
-	if not system.sound_list[group] then system.sound_list[group] = {} end
-	self.groupIndex = #system.sound_list[group] + 1
-	table.insert(system.sound_list[group],self)
+	if not sound_group then sound_group = {} end
+	self.groupIndex = #sound_group + 1
+	table.insert(sound_group,self)
 end
 
 function ObjSound:update(dt)
-	self:setVolume(self:getVolume()*system:getSFXVolume())
+	if system then self:setVolume(self:getVolume()*system:getSFXVolume()) end
 end

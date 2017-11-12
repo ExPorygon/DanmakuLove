@@ -16,7 +16,7 @@ function ObjAttackPattern:_init(life,timer,name,spell,survival,last)
 	ObjBase._init(self)
 
 	-- Default Values
-	self.type = "attack_pattern"
+	self.type = "attackpattern"
 	self.life = life
 	if timer then self.timer_init = timer else self.timer_init = 60 end
 	self.timer = self.timer_init
@@ -46,10 +46,6 @@ function ObjAttackPattern:_init(life,timer,name,spell,survival,last)
 
 end
 
-function ObjAttackPattern.start(self)
-	self:startTask(self.mainTask,self)
-end
-
 function ObjAttackPattern:update(dt)
 	-- if self.isDelete then return end
 	self:resumeAllTasks()
@@ -60,8 +56,8 @@ function ObjAttackPattern:update(dt)
 		self.score = self.score_init*(1/3)+(self.score_init*(2/3)*(self.timer/(self.timer_init-5)))
 	end
 
-	if self.timer <= 0 then self:finish() end
-	if self.boss:getLife() <= 0 then self:finish() end
+	if self.timer <= 0 then self:_finish() end
+	if self.boss:getLife() <= 0 then self:_finish() end
 
 	if player.isBombing and self.bombSwitch then self.bomb_num = self.bomb_num + 1 self.bombSwitch = false
 	elseif not player.isBombing then self.bombSwitch = true end
@@ -69,10 +65,22 @@ function ObjAttackPattern:update(dt)
 	elseif player.state ~= "down" then self.shootdownSwitch = true end
 end
 
-function ObjAttackPattern:finish()
+function ObjAttackPattern:_finish()
+	self.finish()
 	self.boss:setLife(0)
 	self:delete()
 	coroutine.resume(self.boss.mainTask)
+end
+
+function ObjAttackPattern.finish()
+end
+
+function ObjAttackPattern:setDefaultBoss(obj)
+	self.defaultBoss = obj
+end
+
+function ObjAttackPattern:getDefaultBoss()
+	return self.defaultBoss
 end
 
 function ObjAttackPattern:setScore(score)
@@ -124,7 +132,7 @@ function ObjAttackPattern:startSpell(score)
 		self.score_init = 0
 		self.score = 0
 	end
-	--Insert cutin function here
+	getSoundObject("spell"):play(0.8)
 end
 
 function ObjAttackPattern:setAttackName(name)

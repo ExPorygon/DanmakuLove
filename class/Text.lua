@@ -1,4 +1,4 @@
-require "class/Image"
+require "class/Move"
 
 ObjText = {}
 ObjText.__index = ObjText

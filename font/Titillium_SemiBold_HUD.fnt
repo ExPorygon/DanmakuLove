@@ -1,7 +1,7 @@
 info face=Titillium_SemiBold_HUD size=36 bold=0 italic=0 charset= unicode= stretchH=100 smooth=1 aa=1 padding=2,2,2,2 spacing=0,0 outline=0
 common lineHeight=55 base=30 scaleW=256 scaleH=512 pages=1 packed=0
 page id=0 file="Titillium_SemiBold_HUD.png"
-chars count=89
+chars count=91
 char id=97 x=2 y=2 width=21 height=24 xoffset=1 yoffset=11 xadvance=18 page=0 chnl=15
 char id=98 x=2 y=28 width=21 height=31 xoffset=2 yoffset=3 xadvance=19 page=0 chnl=15
 char id=99 x=2 y=61 width=18 height=24 xoffset=2 yoffset=11 xadvance=16 page=0 chnl=15
@@ -91,4 +91,6 @@ char id=123 x=102 y=265 width=16 height=37 xoffset=1 yoffset=2 xadvance=13 page=
 char id=125 x=106 y=207 width=16 height=37 xoffset=1 yoffset=2 xadvance=13 page=0 chnl=15
 char id=91 x=107 y=92 width=14 height=37 xoffset=3 yoffset=2 xadvance=12 page=0 chnl=15
 char id=93 x=118 y=131 width=14 height=37 xoffset=1 yoffset=2 xadvance=12 page=0 chnl=15
-char id=32 x=0 y=0 width=0 height=0 xoffset=1 yoffset=2 xadvance=8 page=0 chnl=15
+char id=60 x=120 y=60 width=20 height=23 xoffset=2 yoffset=11 xadvance=20 page=0 chnl=15
+char id=62 x=125 y=475 width=20 height=23 xoffset=3 yoffset=11 xadvance=20 page=0 chnl=15
+char id=32 x=0 y=0 width=0 height=0 xoffset=3 yoffset=11 xadvance=8 page=0 chnl=15

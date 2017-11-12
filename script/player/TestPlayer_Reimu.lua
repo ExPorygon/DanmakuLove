@@ -1,20 +1,15 @@
-player = ObjPlayer(system:getCenterX(),system:getScreenHeight()-100,"img/reimu_player.png")
+--DanmakuLove[Player]
+--Title[Reimu Hakurei]
+--Text[Simple Test Player]
 
-function testPlayerReimu()
-	player:setGrid(64, 96, player.image:getWidth(), player.image:getHeight())
-	player:addAnim("idle",nil,0.07,'1-8',1)
-	player:addAnim("left",'pauseAtEnd',0.07,'1-8',2)
-	player:addAnim("right",'pauseAtEnd',0.07,'1-8',3)
-	player:setAnim("idle")
-	player:setShotDefinition(require "script/shot/TestShot_Reimu")
-	-- player:setScaleXY(1.5,1.5)
+local player = ObjPlayer(system:getCenterX(),system:getScreenHeight()-100,"img/reimu_player.png")
 
-	player:startTask(player.shot,player)
-	player:startNamedTask(player.renderHitbox,"hitbox",player,1)
-	player:startNamedTask(player.renderHitbox,"hitbox_rev",player,-1)
+local function test_shot(x,y)
+	local obj = CreatePlayerShotA1(x,y,30,270,10,1,"amulet_red")
+	obj:setScaleXY(1.0,1.0)
 end
 
-function player.shot(self)
+local function shot(self)
 	local count = -1
 	while true do
 		if love.keyboard.isDown("z") and count == -1 and self.shotAllow or count > 2 then
@@ -28,11 +23,6 @@ function player.shot(self)
 		if count >= 0 then count = count + 1 end
 		wait(1)
 	end
-end
-
-function test_shot(x,y)
-	local obj = CreatePlayerShotA1(x,y,30,270,10,1,"amulet_red")
-	obj:setScaleXY(1.0,1.0)
 end
 
 function player.bomb(self)
@@ -79,3 +69,19 @@ function player.sealBomb(self,rot)
 	objSpell:delete()
 	spell_all = {}
 end
+
+function player.start()
+	player:setGrid(64, 96, player.image:getWidth(), player.image:getHeight())
+	player:addAnim("idle",nil,0.07,'1-8',1)
+	player:addAnim("left",'pauseAtEnd',0.07,'1-8',2)
+	player:addAnim("right",'pauseAtEnd',0.07,'1-8',3)
+	player:setAnim("idle")
+	player:setShotDefinition(require "script/shot/TestShot_Reimu")
+	-- player:setScaleXY(1.5,1.5)
+
+	player:startTask(shot,player)
+	player:startNamedTask(player.renderHitbox,"hitbox",player,1)
+	player:startNamedTask(player.renderHitbox,"hitbox_rev",player,-1)
+end
+
+return player

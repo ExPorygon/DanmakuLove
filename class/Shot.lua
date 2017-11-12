@@ -3,59 +3,15 @@ local anim8 = require 'lib/anim8'
 
 local ShotData_Enemy = require "script/shot/TestShot_Enemy"
 
+local color_code
+local imgDelay
+local quadDelay
+local colorDelay
+local scaleDelay
+local minScaleDelay
+
 ObjShot = {}
 ObjShot.__index = ObjShot
-
-local color_code = {
-	gray = {r=128,g=128,b=128}, red = {r=255,g=0,b=0}, darkred = {r=255,g=0,b=0}, pink = {r=255,g=0,b=128}, maroon = {r=255,g=0,b=128}, magenta = {r=255,g=0,b=255}, darkmagenta = {r=255,g=0,b=255}, purple = {r=128,g=0,b=255}, darkpurple = {r=128,g=0,b=255}, blue = {r=0,g=0,b=255}, darkblue = {r=0,g=0,b=255}, azure = {r=0,g=128,b=255}, darkazure = {r=0,g=128,b=255}, brightazure = {r=0,g=200,b=255}, aqua = {r=0,g=255,b=255}, darkaqua = {r=0,g=255,b=255}, spring = {r=0,g=255,b=128}, darkspring = {r=0,g=255,b=128}, green = {r=0,g=255,b=0}, darkgreen = {r=0,g=255,b=0}, chartreuse = {r=128,g=255,b=0}, swampgreen = {r=128,g=255,b=0}, brightchartreuse = {r=64,g=255,b=0}, yellow = {r=255,g=255,b=0}, darkyellow = {r=255,g=255,b=0}, brightyellow = {r=255,g=255,b=0}, gold = {r=255,g=192,b=0}, orange = {r=255,g=128,b=0}, darkorange = {r=255,g=128,b=0}, lightgray = {r=192,g=192,b=192}, black = {r=128,g=128,b=128}, white = {r=255,g=255,b=255}
-}
-
-local imgDelay = love.graphics.newImage("img/delay.png")
-local quadDelay = {}
-for i = 0, 7 do
-	quadDelay[i+1] = love.graphics.newQuad(0+i*64, 0, 64, 64, imgDelay:getDimensions())
-end
-local colorDelay = {
-	gray = quadDelay[1], darkred = quadDelay[2], red = quadDelay[2], purple = quadDelay[3], magenta = quadDelay[3], darkblue = quadDelay[4], blue = quadDelay[4], darkaqua = quadDelay[5], aqua = quadDelay[5], darkgreen = quadDelay[6], green = quadDelay[6], darkyellow = quadDelay[7], yellow = quadDelay[7], darkorange = quadDelay[8], orange = quadDelay[8], white = quadDelay[1]
-}
-local scaleDelay = 0
-local minScaleDelay = 0
-
-bulletBreak = ObjSpriteBatch(50,"img/bullet_break.png",5000)
-bulletBreak:setGrid(64, 64, bulletBreak.image:getWidth(), bulletBreak.image:getHeight())
-bulletBreak:setBlendMode("add")
-bulletBreak.anim_list = {}
-bulletBreak.sprite_list = {}
-
-function ObjShot:bulletBreakEffect()
-	local frames = bulletBreak.grid('1-8',1)
-	local anim = anim8.newAnimation(frames,(1/60)*3,"pauseAtEnd")
-	local graphicData = self.data
-	table.insert(bulletBreak.anim_list,anim)
-	table.insert(bulletBreak.sprite_list,{x = self.x, y = self.y, frame = 0, color = color_code[graphicData.delay_color]})
-end
-
-function bulletBreak:update()
-	local dt = 1/60
-	bulletBreak:clear()
-	for i = 1, #bulletBreak.sprite_list do
-		local anim = bulletBreak.anim_list[i]
-		local sprite = bulletBreak.sprite_list[i]
-		local x = sprite.x
-		local y = sprite.y
-		local c = sprite.color
-		sprite.frame = sprite.frame + 1
-		bulletBreak.source:setColor(c.r,c.g,c.b,255)
-		bulletBreak:addQuadSprite(anim:getFrameInfo(x,y,0,0.8,0.8,32,32))
-		anim:update(dt)
-	end
-	for i = #bulletBreak.sprite_list, 1, -1 do
-		if bulletBreak.sprite_list[i].frame >= 24 then
-			table.remove(bulletBreak.sprite_list,i)
-			table.remove(bulletBreak.anim_list,i)
-		end
-	end
-end
 
 setmetatable(ObjShot, {
 	__index = ObjMove,
@@ -65,14 +21,6 @@ setmetatable(ObjShot, {
 		return self
 	end,
 })
-
-shot_all = {}
-for i = 1, 5000 do
-	local obj = ObjShot(0,0)
-	obj.isDelete = true
-	shot_all[i] = obj
-	-- table.insert(shot_all,i,obj)
-end
 
 function ObjShot:_init(x,y,source)
 	if source == "enemy" then ObjMove._init(self,x,y,50) end
@@ -90,8 +38,75 @@ function ObjShot:_init(x,y,source)
 	self.source = source
 	if source == "enemy" then self.definition = ShotData_Enemy end
 	if source == "player" then self.definition = player:getShotDefinition() end
-	self.image = self.definition.image
+	if self.definition then	self.image = self.definition.image end
+end
 
+function initShotManager()
+	shot_all = {}
+	for i = 1, 5000 do
+		local obj = ObjShot(0,0)
+		obj.isDelete = true
+		shot_all[i] = obj
+		-- table.insert(shot_all,i,obj)
+	end
+
+	color_code = {
+		gray = {r=128,g=128,b=128}, red = {r=255,g=0,b=0}, darkred = {r=255,g=0,b=0}, pink = {r=255,g=0,b=128}, maroon = {r=255,g=0,b=128}, magenta = {r=255,g=0,b=255}, darkmagenta = {r=255,g=0,b=255}, purple = {r=128,g=0,b=255}, darkpurple = {r=128,g=0,b=255}, blue = {r=0,g=0,b=255}, darkblue = {r=0,g=0,b=255}, azure = {r=0,g=128,b=255}, darkazure = {r=0,g=128,b=255}, brightazure = {r=0,g=200,b=255}, aqua = {r=0,g=255,b=255}, darkaqua = {r=0,g=255,b=255}, spring = {r=0,g=255,b=128}, darkspring = {r=0,g=255,b=128}, green = {r=0,g=255,b=0}, darkgreen = {r=0,g=255,b=0}, chartreuse = {r=128,g=255,b=0}, swampgreen = {r=128,g=255,b=0}, brightchartreuse = {r=64,g=255,b=0}, yellow = {r=255,g=255,b=0}, darkyellow = {r=255,g=255,b=0}, brightyellow = {r=255,g=255,b=0}, gold = {r=255,g=192,b=0}, orange = {r=255,g=128,b=0}, darkorange = {r=255,g=128,b=0}, lightgray = {r=192,g=192,b=192}, black = {r=128,g=128,b=128}, white = {r=255,g=255,b=255}
+	}
+
+	imgDelay = love.graphics.newImage("img/delay.png")
+	quadDelay = {}
+	for i = 0, 7 do
+		quadDelay[i+1] = love.graphics.newQuad(0+i*64, 0, 64, 64, imgDelay:getDimensions())
+	end
+	colorDelay = {
+		gray = quadDelay[1], darkred = quadDelay[2], red = quadDelay[2], purple = quadDelay[3], magenta = quadDelay[3], darkblue = quadDelay[4], blue = quadDelay[4], darkaqua = quadDelay[5], aqua = quadDelay[5], darkgreen = quadDelay[6], green = quadDelay[6], darkyellow = quadDelay[7], yellow = quadDelay[7], darkorange = quadDelay[8], orange = quadDelay[8], white = quadDelay[1]
+	}
+	scaleDelay = 0
+	minScaleDelay = 0
+
+	bulletBreak = ObjSpriteBatch(50,"img/bullet_break.png",5000)
+	bulletBreak:setGrid(64, 64, bulletBreak.image:getWidth(), bulletBreak.image:getHeight())
+	bulletBreak:setBlendMode("add")
+	bulletBreak.anim_list = {}
+	bulletBreak.sprite_list = {}
+
+	function ObjShot:bulletBreakEffect()
+		local frames = bulletBreak.grid('1-8',1)
+		local anim = anim8.newAnimation(frames,(1/60)*3,"pauseAtEnd")
+		table.insert(bulletBreak.anim_list,anim)
+		table.insert(bulletBreak.sprite_list,{x = self.x, y = self.y, frame = 0, color = color_code[self.data.delay_color]})
+	end
+
+	function bulletBreak:update()
+		local dt = 1/60
+		bulletBreak:clear()
+		for i = 1, #bulletBreak.sprite_list do
+			local anim = bulletBreak.anim_list[i]
+			local sprite = bulletBreak.sprite_list[i]
+			local x = sprite.x
+			local y = sprite.y
+			local c = sprite.color
+			sprite.frame = sprite.frame + 1
+			bulletBreak.source:setColor(c.r,c.g,c.b,255)
+			bulletBreak:addQuadSprite(anim:getFrameInfo(x,y,0,0.8,0.8,32,32))
+			anim:update(dt)
+		end
+		for i = #bulletBreak.sprite_list, 1, -1 do
+			if bulletBreak.sprite_list[i].frame >= 24 then
+				table.remove(bulletBreak.sprite_list,i)
+				table.remove(bulletBreak.anim_list,i)
+			end
+		end
+	end
+end
+
+function updateAllShots(dt)
+	for i = 1, 5000 do
+		if shot_all[i].isDelete == false then
+			shot_all[i]:update(dt)
+		end
+    end
 end
 
 function ObjShot:setGraphic(graphic)
@@ -113,7 +128,7 @@ function ObjShot:draw()
 	end
 
 	self.data = self.definition[self.graphic]
-	if self.data == nil then error(self.graphic.."does not exist") end
+	if self.data == nil then error(self.graphic.." does not exist") end
 	if not self.data.render then self.data.render = "alpha" end
 	if not self.data.fixed_angle then self.data.fixed_angle = false end
 	if not self.data.angular_velocity then self.data.angular_velocity = 0 end
@@ -147,6 +162,7 @@ end
 
 function ObjShot:update(dt)
 	if self.isDelete then return end
+	self.data = self.definition[self.graphic]
 	self:spellCollision()
 	if self.x > 1280+40 or self.y > 960+40 or self.x < -40 or self.y < -40 then
 		self:delete()

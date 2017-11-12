@@ -1,17 +1,12 @@
+--DanmakuLove[Pattern]
+--Title[Nonspell_2]
+--Text[Nonspell #2]
+--Player[]
+
 local objPattern = ObjAttackPattern(900,60)
-local shot2 = system:getSoundObject("shot1")
+local shot2 = getSoundObject("shot1")
 
-function objPattern.mainTask(self)
-	self.boss:setInvincibility(210)
-	objPattern:cutIn("TABLE","img/eternity_cut.png")
-	objPattern:startSpell(3000000)
-	wait(120)
-	objPattern:startTask(self.fire,self,50,90)
-	objPattern:startTask(self.fire,self,10,15)
-	objPattern:startTask(self.move,self)
-end
-
-function objPattern.fire(self,num,w)
+local function fire(self,num,w)
 	while true do
 		local dir = love.math.random(0,360)
 		shot2:play(0.6)
@@ -22,7 +17,7 @@ function objPattern.fire(self,num,w)
 	end
 end
 
-function objPattern.move(self)
+local function move(self)
 	while true do
 		self.boss:setDestAtWeight(self.boss:getX()+200,self.boss:getY()+50,10,5)
 		wait(180)
@@ -32,5 +27,17 @@ function objPattern.move(self)
 		wait(180)
 	end
 end
+
+function objPattern.start()
+	objPattern.boss:setInvincibility(210)
+	objPattern:cutIn("TABLE","img/eternity_cut.png")
+	objPattern:startSpell(3000000)
+	wait(120)
+	objPattern:startTask(fire,objPattern,50,90)
+	objPattern:startTask(fire,objPattern,10,15)
+	objPattern:startTask(move,objPattern)
+end
+
+
 
 return objPattern

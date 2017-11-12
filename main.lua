@@ -1,26 +1,11 @@
 function love.load()
-	listDrawLayer = {}
-	for i = 1, 100 do
-		listDrawLayer[i] = {}
-	end
-
-	require "lib/coroutine_error"
-	require "lib/function_list"
-	require "lib/function_wait"
-	require "lib/function_math"
-	require "lib/function_misc"
-	require "lib/function_collision"
-
-	require "class/Base"
-	require "class/System"
-	system = ObjSystem(73,32,841,928)
-
-	require "class/SpriteBatch"
-	require "class/Shot"
-	require "class/Boss"
-	require "class/Sound"
-	require "class/Text"
-	require "class/AttackPattern"
+	StateManager = require "lib.GameState"
+	states = {
+		scriptselection = require "state.ScriptSelection",
+		game = require "state.Game"
+	}
+	__FRAMEWORK__ = require "class.Framework"
+	__FRAMEWORK__:init()
 
 	ObjSound("shot1","sound/shot1.wav")
 	ObjSound("pshot","sound/pshot.wav")
@@ -28,19 +13,60 @@ function love.load()
 	ObjSound("spell","sound/spell.wav")
 	ObjSound("graze","sound/graze.wav")
 
-	require "class/Player"
-	require "script/player/TestPlayer_Reimu"
-	require "script/eternity/TestBoss_Eternity"
+	StateManager.switch(states.scriptselection)
+	StateManager.registerEvents()
+end
 
-	system:initFrame()
-	system:initHUD()
+function generateScriptDataList()
+	local list = generateScriptList("script")
+	local returnData = {}
+	for i = #list, 1, -1 do
+		if not checkScriptHeader(list[i]) then table.remove(list,i) end
+	end
+	for i = 1, #list do
+		local data = generateScriptData(list[i])
+		if data.Type ~= "Player" then table.insert(returnData,{FilePath = list[i], Type = data.Type, Title = data.Title, Text = data.Text}) end
+	end
+	return returnData
+end
 
-	sHeight = love.graphics.getHeight()
-	sWidth =  love.graphics.getWidth()
+function generateScriptData(filepath)
+	local file = love.filesystem.read(filepath)
+	local data = {}
+	for s in file:gmatch("[^\n]+") do
+		local cap1, cap2 = s:match('--(%a*)%[(.-)%]')
+		if cap1 == nil then break end
+		if cap1 == "DanmakuLove" then cap1 = "Type" end
+		data[cap1] = cap2
+	end
+	return data
+end
 
-	testPlayerReimu()
-	testBossEternity()
+function generateScriptList(directory)
+	local scriptList = {}
+	local itemList = love.filesystem.getDirectoryItems(directory)
+	for i = 1, #itemList do
+		local path = directory.."/"..itemList[i]
+		if love.filesystem.isDirectory(path) then
+			local list = generateScriptList(path)
+			scriptList = concatTables(scriptList,list)
+		elseif path:sub(path:len()-3,path:len()) == ".lua" then
+			table.insert(scriptList,path)
+		end
+	end
+	return scriptList
+end
 
+function concatTables(t1,t2)
+    for i=1,#t2 do
+        t1[#t1+1] = t2[i]
+    end
+    return t1
+end
+
+function checkScriptHeader(filepath)
+	local file = love.filesystem.read(filepath)
+	if file:find("--DanmakuLove") then return true else return false end
 end
 
 function love.keypressed(key)
@@ -49,20 +75,14 @@ function love.keypressed(key)
 end
 
 function love.update(dt)
-	update_objects(shot_all,dt)
-	bulletBreak:update(dt)
-	system:update()
-	player:update(dt)
-	objBoss:update(dt)
 	collectgarbage("step",2)
 end
 
 function love.draw()
-	draw_layers()
 	love.graphics.print("FPS:"..tostring(love.timer.getFPS()),1230,940)
 end
 
-function draw_layers()
+function draw_layers(listDrawLayer)
 	for i = 1, 100 do
 		local listIndex = {}
 		for j = 1, #listDrawLayer[i] do
@@ -76,4 +96,12 @@ function draw_layers()
 			offset = offset + 1
 		end
 	end
+end
+
+function initDrawLayers()
+	local drawTable = {}
+	for i = 1, 100 do
+		drawTable[i] = {}
+	end
+	return drawTable
 end

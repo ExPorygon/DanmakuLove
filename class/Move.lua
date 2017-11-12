@@ -28,6 +28,7 @@ function ObjMove:_init(x,y,priority,filepath,initX,initY,width,height)
 end
 
 function ObjMove:setDestAtWeight(x,y,weight,max_speed)
+	if x == self.x and y == self.y then return end
 	local function move(obj,x,y,weight,max_speed)
 		local distance = math.dist(self.x,self.y,x,y)
 		local angle = AngleBetweenPoints(self.x,self.y,x,y)

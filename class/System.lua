@@ -17,7 +17,7 @@ function ObjSystem:_init(left,top,right,bottom)
 	--Default Values
 	self.screen = {left = left, top = top, right = right, bottom = bottom}
 	self.difficulty = "HARD"
-	self.item_collected = {point = 0}
+	self.item_collected = {power = 0, point = 0}
 	self.score = 0
 	self.hiscore = 0
 	self.graze = 0
@@ -27,14 +27,12 @@ function ObjSystem:_init(left,top,right,bottom)
 	self.shot_list = {}
 	self.spell_list = {}
 	self.item_list = {}
-	self.sound_list = {ALL = {}}
 	self.shot_auto_delete = {left = -64, top = -64, right = 64, bottom = 64}
-	self.game_draw = {min = 20, max = 80}
 	self.volume_music = 1.0
 	self.volume_sfx = 1.0
 	self.hud = {}
 	self.current_event = {}
-	--self.state = use hump for this
+	self.state = {}
 	self.isReplay = false
 
 end
@@ -137,24 +135,6 @@ end
 
 function ObjSystem:initFrame()
 	self.frameImg = ObjImage(640,480,81,"img/frame.png")
-end
-
-function ObjSystem:setGameDrawPriority(min,max)
-	self.game_draw.min = min
-	self.game_draw.max = max
-end
-
-function ObjSystem:getGameDrawPriorityMin()
-	return self.game_draw.min
-end
-
-function ObjSystem:getGameDrawPriorityMax()
-	return self.game_draw.max
-end
-
-function ObjSystem:getSoundObject(name)
-	local sound = self.sound_list.ALL[name]
-	return assert(sound,name..": Sound object not found")
 end
 
 function ObjSystem:setMusicVolume(volume)

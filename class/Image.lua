@@ -61,21 +61,22 @@ end
 
 function ObjImage:checkPriorityRange()
 	-- if self.type == "spritebatch" or self.type == "image" then return false end
-	return self:getDrawPriority() > system:getGameDrawPriorityMin() and self:getDrawPriority() < system:getGameDrawPriorityMax()
+	return self:getDrawPriority() > getGameDrawPriorityMin() and self:getDrawPriority() < getGameDrawPriorityMax()
 end
 
 function ObjImage:setDrawPriority(num)
 	local listIndex = {}
-	for i = 1, #listDrawLayer[self.drawPriority] do
-		if listDrawLayer[self.drawPriority][i] == self then table.insert(listIndex,i) end
+	local state = StateManager.current()
+	for i = 1, #state.listDrawLayer[self.drawPriority] do
+		if state.listDrawLayer[self.drawPriority][i] == self then table.insert(listIndex,i) end
 	end
 	local offset = 0
 	for i = 1, #listIndex do
-		table.remove(listDrawLayer[self.drawPriority],listIndex[i]-offset)
+		table.remove(state.listDrawLayer[self.drawPriority],listIndex[i]-offset)
 		offset = offset + 1
 	end
 	self.drawPriority = num
-	table.insert(listDrawLayer[self.drawPriority],self)
+	table.insert(state.listDrawLayer[self.drawPriority],self)
 end
 
 function ObjImage:getDrawPriority(num)

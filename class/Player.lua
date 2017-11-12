@@ -5,7 +5,7 @@ ObjPlayer = {}
 ObjPlayer.__index = ObjPlayer
 
 spell_all = {}
-local graze = system:getSoundObject("graze")
+local graze
 
 setmetatable(ObjPlayer, {
 	__index = ObjMove,
@@ -42,6 +42,8 @@ function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
 	self.respawn_frames_init = 60
 	self.respawn_frames = self.respawn_frames_init
 	self.state = "normal"
+
+	graze = getSoundObject("graze")
 
 end
 
