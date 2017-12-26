@@ -47,6 +47,10 @@ function game:update(dt)
     end
 end
 
+function game:keypressed(key)
+    if key == 'd' then DeleteAllShot() end
+end
+
 function game:draw()
     draw_layers(self.listDrawLayer)
 end

@@ -6,6 +6,7 @@ setmetatable(Framework, {
 
 
 function Framework:init()
+	--log = require "lib.log"
     require "lib.coroutine_error"
     require "lib.wait"
     require "lib.math"
@@ -19,7 +20,7 @@ function Framework:init()
     require "class.Text"
     require "class.Boss"
     require "class.AttackPattern"
-    require "class.Shot"
+    require "class.Laser"
     require "class.Player"
 
     self.game_draw = {min = 20, max = 80}

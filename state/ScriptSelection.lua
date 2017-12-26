@@ -12,7 +12,6 @@ function selection:init()
 end
 
 function selection:enter()
-    print("test")
     selectIndex = 1
     scriptData = generateScriptDataList()
     selectLength = #scriptData
@@ -35,7 +34,6 @@ end
 
 function selection:update(dt)
     cursor:setDestAtWeight(text[selectIndex]:getX()-60,text[selectIndex]:getY(),3,20)
-    -- cursor:update(dt)
 end
 
 function selection:keypressed(key)
@@ -44,7 +42,6 @@ function selection:keypressed(key)
     if key == "z" then
         StateManager.push(states.game,love.filesystem.load(scriptData[selectIndex].FilePath))
     end
-
 end
 
 function selection.keyUp()

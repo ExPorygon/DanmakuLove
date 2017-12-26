@@ -65,6 +65,9 @@ function ObjAttackPattern:update(dt)
 	elseif player.state ~= "down" then self.shootdownSwitch = true end
 end
 
+function ObjAttackPattern:start()
+end
+
 function ObjAttackPattern:_finish()
 	self.finish()
 	self.boss:setLife(0)

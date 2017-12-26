@@ -196,6 +196,17 @@ function ObjPlayer:collision()
 			end
 		end
 	end
+	for i = 1, 2000 do
+		local laser = laser_all[i]
+		if laser.isDelete == false and laser.source == "enemy" then
+			local length = laser.renderLength*laser.spawnScale
+			if collideCircleWithRotatedRectangle({x = self.x, y = self.y, radius = self.hitbox},{x = laser.x-length/2*math.cos(math.rad(laser.moveDir)), y = laser.y-length/2*math.sin(math.rad(laser.moveDir)), dir = math.rad(0-laser.moveDir+90), length = length, width = laser.hitboxWidth}) then
+				if self.state == "normal" and self.invincibility <= 0 then
+					return true
+				end
+			end
+		end
+	end
 end
 
 function ObjPlayer:graze()
@@ -205,6 +216,18 @@ function ObjPlayer:graze()
 			if math.dist(shot.x,shot.y,self.x,self.y) < (self.grazeHitbox + shot.hitbox) then
 				if self.state == "normal" and self.invincibility <= 0 then
 					shot.isGrazed = true
+					return true
+				end
+			end
+		end
+	end
+	for i = 1, 2000 do
+		local laser = laser_all[i]
+		if laser.isDelete == false and laser.source == "enemy" and laser.grazeDelay < 1 then
+			local length = laser.renderLength*laser.spawnScale
+			if collideCircleWithRotatedRectangle({x = self.x, y = self.y, radius = self.grazeHitbox},{x = laser.x-length/2*math.cos(math.rad(laser.moveDir)), y = laser.y-length/2*math.sin(math.rad(laser.moveDir)), dir = math.rad(0-laser.moveDir+90), length = length, width = laser.hitboxWidth}) then
+				if self.state == "normal" and self.invincibility <= 0 then
+					laser.grazeDelay = laser.maxGrazeDelay
 					return true
 				end
 			end

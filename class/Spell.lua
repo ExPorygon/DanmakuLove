@@ -48,7 +48,7 @@ function ObjSpell:setCollisionRectByDir(x,y,dir,length,width)
 	-- local endX = x + length*math.cos(math.rad(dir))
 	-- local endY = y + length*math.sin(math.rad(dir))
 	-- local collision_line = { type = "rectangle", startX = x, startY = y, endX = endX, endY = endY, width = width }
-	local collision_line = { type = "rectangle", x = x, y = y, dir = math.rad(dir), length = length, width = width }
+	local collision_line = { type = "rectangle", x = x, y = y, dir = math.rad(-dir), length = length, width = width }
 	-- table.insert(self.collision_list,collision_line)
 	self.collision = collision_line
 end

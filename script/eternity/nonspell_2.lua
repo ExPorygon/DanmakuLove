@@ -5,8 +5,19 @@
 
 local objPattern = ObjAttackPattern(900,60)
 local shot2 = getSoundObject("shot1")
+local func = {}
 
-local function fire(self,num,w)
+function objPattern.start()
+	objPattern.boss:setInvincibility(210)
+	objPattern:cutIn("TABLE","img/eternity_cut.png")
+	objPattern:startSpell(3000000)
+	wait(120)
+	objPattern:startTask(func.fire,objPattern,50,90)
+	objPattern:startTask(func.fire,objPattern,10,15)
+	objPattern:startTask(func.move,objPattern)
+end
+
+function func.fire(self,num,w)
 	while true do
 		local dir = love.math.random(0,360)
 		shot2:play(0.6)
@@ -17,7 +28,7 @@ local function fire(self,num,w)
 	end
 end
 
-local function move(self)
+function func.move(self)
 	while true do
 		self.boss:setDestAtWeight(self.boss:getX()+200,self.boss:getY()+50,10,5)
 		wait(180)
@@ -27,17 +38,5 @@ local function move(self)
 		wait(180)
 	end
 end
-
-function objPattern.start()
-	objPattern.boss:setInvincibility(210)
-	objPattern:cutIn("TABLE","img/eternity_cut.png")
-	objPattern:startSpell(3000000)
-	wait(120)
-	objPattern:startTask(fire,objPattern,50,90)
-	objPattern:startTask(fire,objPattern,10,15)
-	objPattern:startTask(move,objPattern)
-end
-
-
 
 return objPattern

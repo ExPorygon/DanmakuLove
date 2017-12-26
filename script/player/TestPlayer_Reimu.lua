@@ -55,7 +55,7 @@ function player.sealBomb(self,rot)
 		objSpell:setScaleXY(scale+0.4*rot,scale+0.4*rot)
 		objSpell:setAngle(angle)
 		objSpell:setAlpha(alpha-100*rot)
-		objSpell:setCollisionRectByDir(objSpell:getX(),objSpell:getY(),angle,256*objSpell:getScaleX(),256*objSpell:getScaleY())
+		objSpell:setCollisionRectByDir(objSpell:getX(),objSpell:getY(),angle,256*objSpell:getScaleY(),256*objSpell:getScaleX())
 		wait(1)
 	end
 	for i = 1, 45 do
@@ -63,7 +63,7 @@ function player.sealBomb(self,rot)
 		angle = angle + rot*angle_vel
 		objSpell:setAngle(angle)
 		objSpell:setAlpha(alpha-100*rot)
-		objSpell:setCollisionRectByDir(objSpell:getX(),objSpell:getY(),angle,256*objSpell:getScaleX(),256*objSpell:getScaleY())
+		objSpell:setCollisionRectByDir(objSpell:getX(),objSpell:getY(),angle,256*objSpell:getScaleY(),256*objSpell:getScaleX())
 		wait(1)
 	end
 	objSpell:delete()

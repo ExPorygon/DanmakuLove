@@ -15,6 +15,7 @@ function love.load()
 
 	StateManager.switch(states.scriptselection)
 	StateManager.registerEvents()
+
 end
 
 function generateScriptDataList()
@@ -71,7 +72,6 @@ end
 
 function love.keypressed(key)
 	if key == 'escape' then love.event.quit() end
-	if key == 'd' then DeleteAllShot() end
 end
 
 function love.update(dt)
