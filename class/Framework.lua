@@ -21,6 +21,7 @@ function Framework:init()
     require "class.Boss"
     require "class.AttackPattern"
     require "class.Laser"
+	require "class.Item"
     require "class.Player"
 
     self.game_draw = {min = 20, max = 80}
@@ -64,6 +65,14 @@ end
 
 function getSystem()
     return Framework.system
+end
+
+function getAngleToPlayer(obj)
+	return AngleBetweenPoints(obj.x,obj.y,Framework.player.x,Framework.player.y)
+end
+
+function getPlayerState()
+	return Framework.player.state
 end
 
 return Framework

@@ -139,7 +139,7 @@ function ObjShot:draw()
 	end
 
 	self.data = self.definition[self.graphic]
-	assert(self.data,self.graphic.." does not exist")
+	assert(self.data,"Shot ID \""..self.graphic.."\" does not exist")
 
 	if self.isDelay then
 		local initBlendMode = love.graphics.getBlendMode()

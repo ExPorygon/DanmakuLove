@@ -133,6 +133,10 @@ function ObjSystem:initHUD()
 	Graze()
 end
 
+function ObjSystem:addScore(score)
+	self.score = self.score + score
+end
+
 function ObjSystem:initFrame()
 	self.frameImg = ObjImage(640,480,81,"img/frame.png")
 end

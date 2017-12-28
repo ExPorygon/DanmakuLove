@@ -33,15 +33,12 @@ end
 
 function ObjShotDefinition:addDefaultData(key)
 	if not self[key].render then self[key].render = "alpha" end
+	if not self[key].delay_color then self[key].delay_color = "gray" end
 	if not self[key].angular_velocity then self[key].angular_velocity = 0 end
 	if not self[key].fixed_angle then self[key].fixed_angle = false end
 	if not self[key].offsetX then self[key].offsetX = 0 end
 	if not self[key].offsetY then self[key].offsetY = 0 end
 	if not self[key].rot_angle then self[key].rot_angle = 0 end
-end
-
-function generateAnimaionParams(durations,frames,width,height)
-	return { durations = durations, frames = frames, width = width, height = height }
 end
 
 function ObjShotDefinition:addDataSet(num_across,num_down,width,height,shot_list,color_list,render,angular_velocity,fixed_angle,offsetX,offsetY,rot_angle)

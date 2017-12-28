@@ -14,6 +14,7 @@ function game:enter(old_state,toRun)
     system:initFrame()
     system:initHUD()
     initShotManager()
+    initItemManager()
 
     local obj_ToRun = toRun()
 
@@ -36,6 +37,7 @@ end
 
 function game:update(dt)
     updateAllShots(dt)
+    updateAllItems(dt)
 	bulletBreak:update(dt)
 	system:update()
 	getPlayer():update(dt)
