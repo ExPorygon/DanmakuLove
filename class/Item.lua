@@ -37,67 +37,118 @@ function ObjItem:_init(x,y)
 	-- Default Values
 	self.type = "item"
 	self.id = 1
-	self.hitbox = 16
+	self.hitbox = 32
 	self.score = 0
 	self.collect = false
-	self.defaultPattern = true
-	self.init = true
+	self.autoCollectEnable = true
+	self.defaultScoreRenderEnable = true
 	self.definition = ItemData
 	if self.definition then self.image = self.definition.image end
 	self.autoCollectEnable = true
-
 end
 
 function ObjItem:setHitbox(hitbox)
 	self.hitbox = hitbox
 end
 
-function ObjItem:setdefaultMovementEnable(bool)
-	self.defaultPattern = bool
+function ObjItem:setDropSpeed(speed)
+	self.dropSpeed = speed
+end
+
+function ObjItem:setDefaultRenderScoreEnable(bool)
+	self.defaultScoreRenderEnable = bool
+end
+
+function ObjItem:setAutoCollectEnable(bool)
+	self.autoCollectEnable = bool
+end
+
+function ObjItem:setID(id)
+	self.id = id
+end
+
+function ObjItem:autoCollectLine()
+	if self.autoCollectEnable and getPlayer().y < getPlayer().autoCollectLine then
+		self.collect = true
+	end
+end
+
+function ObjItem.renderScoreText(x,y,text,R,G,B)
+	local objText = ObjText(x,y,61,"crystalclear.ttf",text,20)
+	objText:setAlignment("center")
+	objText:setWrapLimit(60)
+	objText:setColor(R,G,B)
+	objText:setFontSize(20)
+
+	local alpha = 200
+	local count = 1
+
+	for i=1,20 do
+		objText:setPosition(x+40,y,0)
+		objText:setAlpha(alpha)
+		y=y-0.6
+		coroutine.yield()
+	end
+	for i=1,10 do
+		objText:setPosition(x+40,y,0)
+		objText:setAlpha(alpha)
+		alpha=alpha-200/10
+		y=y-0.6
+		coroutine.yield()
+	end
+	objText:delete()
 end
 
 function ObjItem:update(dt)
 	if self.isDelete then return end
 	ObjMove.update(self,dt)
-	if self.init and self.defaultPattern then self:startNamedTask(self.initPattern,"__Init_Move_Pattern__",self) end
 	self:collision()
+	self:autoCollectLine()
 	self:resumeAllTasks()
 end
 
-function ObjItem.initPattern(self)
-	self.init = false
-	self:setSpeed(-2.5)
-	self:setDirection(90)
-	self:setAcceleration(0.05)
-	self:setMaxSpeed(2.5)
-	local angle = 0
-	for i=1,15 do
-		angle = angle + 360/15*5
-		self:setAngle(angle)
-		coroutine.yield()
-	end
-end
-function ObjItem:setAutoCollectEnable(bool)
-	self.autoCollectEnable = bool
+function ObjItem.initPattern(self,pattern)
+	if pattern == "STANDARD_A1" then
+		self:setSpeed(-2.5)
+		self:setDirection(90)
+		self:setAcceleration(0.05)
+		self:setMaxSpeed(self.dropSpeed or 2.5)
+		local angle = 0
+		for i=1,15 do
+			angle = angle + 360/15*5
+			self:setAngle(angle)
+			coroutine.yield()
+		end
+	elseif pattern == "STANDARD_B1" then
+	elseif pattern == "MOVE_TO_PLAYER" then
+		self:setSpeed(15)
+		while self:isDeleted() do
+			self:setDirection(getAngleToPlayer(self))
+			coroutine.yield()
+		end
+	elseif pattern == nil then error("You must enter a valid pattern string code")
+	else error("'"..pattern.."'is not a valid pattern code") end
 end
 
 function ObjItem:collision()
 	local collectRadius
 	if love.keyboard.isDown("lshift") then collectRadius = 140 else collectRadius = 75 end
 
-	if self.collect == false and math.dist(getPlayer():getX(),getPlayer():getY(),self.x,self.y) <= collectRadius then
+	if self.collect == false and getDistanceToPlayer(self) <= collectRadius then
 		self:setSpeed(10)
 		self:setAcceleration(2)
-		self:setMaxSpeed(20)
+		self:setMaxSpeed(15)
 		self.collect = true
 	end
-	if self.collect == true and math.dist(getPlayer():getX(),getPlayer():getY(),self.x,self.y) <= self.hitbox then
+	if self.collect == true and getDistanceToPlayer(self) <= self.hitbox then
+		if self.defaultScoreRenderEnable == true then getSystem():startTask(self.renderScoreText,self.x,self.y,self.score,255,255,255) end
 		self:delete()
 		--AddScore(self.score)
 		--Insert item signaling here maybe
 	end
 	if self.collect == true then
 		self:setDirection(getAngleToPlayer(self))
+		self:setSpeed(15)
 		if getPlayerState() == "down" then self.collect = false end
 	end
 end
@@ -150,6 +201,40 @@ function CreateItemA1(x,y,id,score)
 	obj:_init(x,y)
 	obj.id = id
 	obj.score = score
+	return obj
+end
+
+function CreateItemA2(x,y,id,pattern,score)
+	local index = findDeadItem()
+	local obj = item_all[index]
+	obj:_init(x,y)
+	obj.id = id
+	obj.score = score
+	obj.defaultPattern = true
+	obj:startNamedTask(obj.initPattern,"__Init_Move_Pattern__",obj,pattern)
+	return obj
+end
+
+function CreateItemB1(x,y,id,drop_speed,score)
+	local index = findDeadItem()
+	local obj = item_all[index]
+	obj:_init(x,y)
+	obj.id = id
+	obj.score = score
+	obj.dropSpeed = drop_speed
+	obj:setSpeed(drop_speed)
+	obj:setDirection(90)
+	return obj
+end
+
+function CreateItemB2(x,y,id,drop_speed,pattern,score)
+	local index = findDeadItem()
+	local obj = item_all[index]
+	obj:_init(x,y)
+	obj.id = id
+	obj.score = score
+	obj.dropSpeed = drop_speed
+	obj:startNamedTask(obj.initPattern,"__Init_Move_Pattern__",obj,pattern)
 	return obj
 end
 

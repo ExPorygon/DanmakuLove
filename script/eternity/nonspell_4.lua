@@ -21,7 +21,8 @@ function func.fire(self)
 		--shot1:play(0.6)
 		wait(120)
 		for i=1, 20 do
-			CreateItemA1(self.boss:getX()+love.math.random(-120,120),self.boss:getY()+love.math.random(-120,120),"power")
+			local obj = CreateItemA2(self.boss:getX()+love.math.random(-120,120),self.boss:getY()+love.math.random(-120,120),"delete","STANDARD_A1",10000)
+			obj:setAlpha(150)
 		end
 	end
 end

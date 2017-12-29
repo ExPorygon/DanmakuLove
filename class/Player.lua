@@ -28,6 +28,7 @@ function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
 	self.slowSpeed = 1.9
 	self.fastSpeed = 6
 	self.shotDefinition = {}
+	self.autoCollectLine = 160
 
 	self.isBombing = false
 

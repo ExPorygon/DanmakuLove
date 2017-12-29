@@ -75,4 +75,8 @@ function getPlayerState()
 	return Framework.player.state
 end
 
+function getDistanceToPlayer(obj)
+	return math.dist(getPlayer():getX(),getPlayer():getY(),obj.x,obj.y)
+end
+
 return Framework
