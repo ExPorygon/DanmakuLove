@@ -14,6 +14,36 @@ setmetatable(ObjItem, {
 	end,
 })
 
+SignalManager.register("SGL_GET_ITEM", function(obj)
+	local player = getPlayer()
+	local system = getSystem()
+	if obj.id == "DEFAULT_DELETE" then
+		system:addPIV(1+1*player.graze/100)
+	elseif obj.id == "DEFAULT_POWER" then
+		if player.power < player.power_max then player.power = player.power + 1 end
+	elseif obj.id == "DEFAULT_POINT" then
+		system:addScore(obj.score)
+	elseif obj.id == "DEFAULT_FULL_POWER" then
+		player.power = player.power_max
+	elseif obj.id == "DEFAULT_BOMB_PIECE" then
+		if player.spell_piece < player.spell_piece_max then player.spell_piece = player.spell_piece + 1 end
+		if player.spell_piece == player.spell_piece_max then
+			player.spell = player.spell + 1
+			player.spell_piece = 0
+		end
+	elseif obj.id == "DEFAULT_BOMB" then
+		if player.spell < player.spell_max then player.spell = player.spell + 1 end
+	elseif obj.id == "DEFAULT_LIFE_PIECE" then
+		if player.life_piece < player.life_piece_max then player.life_piece = player.life_piece + 1 end
+		if player.life_piece == player.life_piece_max then
+			player.life = player.life + 1
+			player.life_piece = 0
+		end
+	elseif obj.id == "DEFAULT_LIFE" then
+		if player.life < player.life_max then player.life = player.life + 1 end
+	end
+end)
+
 function initItemManager()
 	item_all = {}
 	for i = 1, 5000 do
@@ -39,6 +69,7 @@ function ObjItem:_init(x,y)
 	self.id = 1
 	self.hitbox = 32
 	self.score = 0
+	self.dropSpeed = 2.5
 	self.collect = false
 	self.autoCollectEnable = true
 	self.defaultScoreRenderEnable = true
@@ -53,6 +84,7 @@ end
 
 function ObjItem:setDropSpeed(speed)
 	self.dropSpeed = speed
+	self:setSpeed(speed)
 end
 
 function ObjItem:setDefaultRenderScoreEnable(bool)
@@ -142,9 +174,8 @@ function ObjItem:collision()
 	end
 	if self.collect == true and getDistanceToPlayer(self) <= self.hitbox then
 		if self.defaultScoreRenderEnable == true then getSystem():startTask(self.renderScoreText,self.x,self.y,self.score,255,255,255) end
+		SignalManager.emit("SGL_GET_ITEM",self)
 		self:delete()
-		--AddScore(self.score)
-		--Insert item signaling here maybe
 	end
 	if self.collect == true then
 		self:setDirection(getAngleToPlayer(self))
@@ -183,13 +214,17 @@ function ObjItem:draw()
 	love.graphics.setBlendMode(self.blendMode)
 	love.graphics.setColor(self.color.red, self.color.green, self.color.blue, self.alpha)
 
+	if drawY < 36-self.data.height_indicator/2 then
+		love.graphics.draw(self.image, self.data.quad_indicator, drawX, 36, 0, 1, 1, self.data.width_indicator/2, 0)
+	end
+
 	if self.data.animation_data and not self.anim then
 		self:initItemAnim()
 	end
 	if self.anim then
 		self.anim:draw(self.image, drawX, drawY, dir, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	else
-		love.graphics.draw(self.image, self.data.quad_item, drawX, drawY, math.rad(self.data.rot_angle+self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
+		love.graphics.draw(self.image, self.data.quad, drawX, drawY, math.rad(self.data.rot_angle+self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	end
 	love.graphics.setBlendMode(initBlendMode)
 	love.graphics.setColor(255, 255, 255, 255)
@@ -201,6 +236,8 @@ function CreateItemA1(x,y,id,score)
 	obj:_init(x,y)
 	obj.id = id
 	obj.score = score
+	obj:setSpeed(obj.dropSpeed)
+	obj:setDirection(90)
 	return obj
 end
 
@@ -211,7 +248,7 @@ function CreateItemA2(x,y,id,pattern,score)
 	obj.id = id
 	obj.score = score
 	obj.defaultPattern = true
-	obj:startNamedTask(obj.initPattern,"__Init_Move_Pattern__",obj,pattern)
+	obj:startNamedTask(obj.initPattern,"__MOVE_PATTERN__",obj,pattern)
 	return obj
 end
 
@@ -234,7 +271,7 @@ function CreateItemB2(x,y,id,drop_speed,pattern,score)
 	obj.id = id
 	obj.score = score
 	obj.dropSpeed = drop_speed
-	obj:startNamedTask(obj.initPattern,"__Init_Move_Pattern__",obj,pattern)
+	obj:startNamedTask(obj.initPattern,"__MOVE_PATTERN__",obj,pattern)
 	return obj
 end
 

@@ -8,6 +8,7 @@ local shot2 = getSoundObject("shot1")
 local func = {}
 
 function objPattern.start()
+	objPattern.boss:setDestAtWeight(system:getCenterX(),200,10,5)
 	objPattern.boss:setInvincibility(210)
 	objPattern:cutIn("TABLE","img/eternity_cut.png")
 	objPattern:startSpell(3000000)

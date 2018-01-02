@@ -19,6 +19,7 @@ function ObjSystem:_init(left,top,right,bottom)
 	self.difficulty = "HARD"
 	self.item_collected = {power = 0, point = 0}
 	self.score = 0
+	self.score_display = 0
 	self.hiscore = 0
 	self.graze = 0
 	self.point_item_value = 10000
@@ -27,7 +28,7 @@ function ObjSystem:_init(left,top,right,bottom)
 	self.shot_list = {}
 	self.spell_list = {}
 	self.item_list = {}
-	self.shot_auto_delete = {left = -64, top = -64, right = 64, bottom = 64}
+	self.shot_auto_delete = {left = -128, top = -128, right = 128, bottom = 128}
 	self.volume_music = 1.0
 	self.volume_sfx = 1.0
 	self.hud = {}
@@ -39,8 +40,8 @@ end
 
 function ObjSystem:update()
 	self:resumeAllTasks()
-	-- self.hud.life:setText(player.life)
-	-- self.hud.spell:setText(player.spell)
+	if self.score_display < self.score then self.score_display = self.score_display + 400
+	elseif self.score_display > self.score then self.score_display = self.score end
 	self.hud.life:clear()
 	for i = 1, player.life do
 		self.hud.life:addQuadSprite(love.graphics.newQuad(426,3,41,38,512,1024),930+40*i,210,0,1,1,41/2,38/2)
@@ -49,7 +50,7 @@ function ObjSystem:update()
 	for i = 1, player.spell do
 		self.hud.spell:addQuadSprite(love.graphics.newQuad(422,42,45,43,512,1024),930+40*i,250,0,1,1,45/2,43/2)
 	end
-	self.hud.score:setText(NumToCommas(system.score))
+	self.hud.score:setText(NumToCommas(system.score_display))
 	self.hud.hiscore:setText(NumToCommas(system.hiscore))
 	self.hud.piv:setText(NumToCommas(system.point_item_value))
 	self.hud.graze:setText(NumToCommas(system.graze))
@@ -78,11 +79,6 @@ function ObjSystem:initHUD()
 	local function Life()
 		local life = ObjText(850,190,81,"Titillium_SemiBold_HUD.fnt","Life:")
 		life:setColor(255,64,255)
-		-- local num = ObjText(1100,160,81,"Titillium_SemiBold_HUD.fnt")
-		-- num:setColor(255,64,255)
-		-- num:setAlignment("right")
-		-- num:setWrapLimit(100)
-
 		local num_bg = ObjSpriteBatch(81,"img/system.png",8)
 		local num = ObjSpriteBatch(81,"img/system.png",8)
 		for i = 1, 8 do
@@ -94,10 +90,6 @@ function ObjSystem:initHUD()
 	local function Spell()
 		local spell = ObjText(850,230,81,"Titillium_SemiBold_HUD.fnt","Spell:")
 		spell:setColor(64,255,64)
-		-- local num = ObjText(1100,200,81,"Titillium_SemiBold_HUD.fnt")
-		-- num:setColor(64,255,64)
-		-- num:setAlignment("right")
-		-- num:setWrapLimit(100)
 		local num_bg = ObjSpriteBatch(81,"img/system.png",8)
 		local num = ObjSpriteBatch(81,"img/system.png",8)
 		for i = 1, 8 do
@@ -135,6 +127,10 @@ end
 
 function ObjSystem:addScore(score)
 	self.score = self.score + score
+end
+
+function ObjSystem:addPIV(score)
+	self.point_item_value = self.point_item_value + score
 end
 
 function ObjSystem:initFrame()

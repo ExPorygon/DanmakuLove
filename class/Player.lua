@@ -22,8 +22,16 @@ function ObjPlayer:_init(x,y,filepath,initX,initY,width,height)
 	-- Default Values
 	self.type = "player"
 	self.life = 2
-	self.spell = 2
+	self.life_max = 8
+	self.life_piece = 0
+	self.life_piece_max = 3
+	self.spell = 3
+	self.spell_max = 8
+	self.spell_piece = 0
+	self.spell_piece_max = 3
 	self.hitbox = 4
+	self.power = 1
+	self.power_max = 4
 	self.grazeHitbox = 40
 	self.slowSpeed = 1.9
 	self.fastSpeed = 6

@@ -36,20 +36,20 @@ function ObjBoss:_init(x,y,filepath,initX,initY,width,height)
 end
 
 function ObjBoss.initHUD(self)
-	self.HUD.lifebar = ObjImage(system:getCenterX()+30,60,79,"img/lifebar.png",169,7,686,50)
+	self.HUD.lifebar = ObjImage(system:getCenterX()+30,60,40,"img/lifebar.png",169,7,686,50)
 
 	self.HUD.divider = {}
 	for i = 1, #self.life[self.lifebarCurrent]-1 do
-		self.HUD.divider[i] = ObjImage(-100,60,79,"img/divider.png")
+		self.HUD.divider[i] = ObjImage(-100,60,40,"img/divider.png")
 		self.HUD.divider[i]:setScaleXY(0.7,1.07)
 		-- self.HUD.divider[i]:setBlendMode("add")
 	end
 
-	self.HUD.lifebar_overlay = ObjImage(system:getCenterX()+30,60,79,"img/lifebar.png",169,71,686,50)
-	self.HUD.timer_bg = ObjImage(60,60,79,"img/timer_bg.png")
-	self.HUD.timer = ObjText(110,75,79,"Titillium_SemiBold_HUD.fnt")
-	self.HUD.name = ObjText(173,47,79,"Economica_HUD.fnt")
-	self.HUD.lifebar_num = ObjSpriteBatch(79,"img/lifebar_heart.png",20)
+	self.HUD.lifebar_overlay = ObjImage(system:getCenterX()+30,60,40,"img/lifebar.png",169,71,686,50)
+	self.HUD.timer_bg = ObjImage(60,60,40,"img/timer_bg.png")
+	self.HUD.timer = ObjText(110,75,40,"Titillium_SemiBold_HUD.fnt")
+	self.HUD.name = ObjText(173,47,40,"Economica_HUD.fnt")
+	self.HUD.lifebar_num = ObjSpriteBatch(40,"img/lifebar_heart.png",20)
 
 	local alpha = 0
 	for i = 1, 30 do

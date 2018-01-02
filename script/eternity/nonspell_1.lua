@@ -14,6 +14,9 @@ function objPattern.start()
 end
 
 function objPattern.finish()
+	for i=1,20 do
+		CreateItemA1(objPattern.boss.x+love.math.random(-90,90),objPattern.boss.y+love.math.random(-90,90),"DEFAULT_POINT",1000)
+	end
 end
 
 function func.fire(self,num,w)

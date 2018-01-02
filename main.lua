@@ -4,6 +4,7 @@ function love.load()
 		scriptselection = require "state.ScriptSelection",
 		game = require "state.Game"
 	}
+	SignalManager = require "lib.Signal"
 	__FRAMEWORK__ = require "class.Framework"
 	__FRAMEWORK__:init()
 

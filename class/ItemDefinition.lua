@@ -38,8 +38,8 @@ function ObjItemDefinition:addDefaultData(key)
 	if not self[key].rot_angle then self[key].rot_angle = 0 end
 end
 
-function ObjItemDefinition:addDataSet(num_across,width,height,id_list,render,angular_velocity,offsetX,offsetY,rot_angle)
+function ObjItemDefinition:addDataSet(x,y,num_across,width_item,height_item,width_ind,height_ind,id_list,render,angular_velocity,offsetX,offsetY,rot_angle) --Deprecated and is honestly a huge mess
 	for i = 0, num_across-1 do
-		self:addData(id_list[i+1], { width = width, height = height, quad_item = love.graphics.newQuad(0+i*width, 0, width, height, self.image:getDimensions()), quad_ind = love.graphics.newQuad(0+i*width, height, width, height, self.image:getDimensions()), offsetX = offsetX, offsetY = offsetY, render = render, angular_velocity = angular_velocity, rot_angle = rot_angle })
+		self:addData(id_list[i+1], { width = width_item, height = height_item, quad_item = love.graphics.newQuad(x+i*width_item, y, width_item, height_item, self.image:getDimensions()), quad_ind = love.graphics.newQuad(x+i*width_ind, y+height_ind, width_ind, height_ind, self.image:getDimensions()), offsetX = offsetX, offsetY = offsetY, render = render, angular_velocity = angular_velocity, rot_angle = rot_angle })
 	end
 end
