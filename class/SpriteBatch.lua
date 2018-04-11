@@ -56,5 +56,5 @@ function ObjSpriteBatch:draw()
 	love.graphics.setColor(self.color.red, self.color.green, self.color.blue, self.alpha)
 	love.graphics.draw(self.source,drawX,drawY) -- Investigate
 	love.graphics.setBlendMode(initBlendMode)
-	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setColor(1, 1, 1, 1)
 end

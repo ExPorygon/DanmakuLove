@@ -193,13 +193,13 @@ function ObjImage:setBlendMode(blend)
 end
 
 function ObjImage:setAlpha(alpha)
-	self.alpha = alpha
+	self.alpha = alpha/255
 end
 
 function ObjImage:setColor(red,green,blue)
-	self.color.red = red
-	self.color.green = green
-	self.color.blue = blue
+	self.color.red = red/255
+	self.color.green = green/255
+	self.color.blue = blue/255
 end
 
 function ObjImage:getX()
@@ -242,5 +242,5 @@ function ObjImage:draw()
 		love.graphics.draw(self.image, drawX, drawY, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	end
 	love.graphics.setBlendMode(initBlendMode)
-	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setColor(1, 1, 1, 1)
 end

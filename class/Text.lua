@@ -63,6 +63,6 @@ function ObjText:draw()
 	love.graphics.setColor(self.color.red, self.color.green, self.color.blue, self.alpha)
 	-- love.graphics.scale(self.scale.x,self.scale.y)
 	love.graphics.draw(self.source, self.x, self.y)
-	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setColor(1, 1, 1, 1)
 	-- love.graphics.pop()
 end

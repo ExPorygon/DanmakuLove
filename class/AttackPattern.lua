@@ -275,6 +275,8 @@ function ObjAttackPattern:cutIn(cutType,cutImg)
 		local function SpellBG()
 			local objbg = ObjMove(-1000,-1000,69,"img/SpellNameBG.png")
 			local scale = 1.5
+			local a = 0
+			local a2 = 0
 
 			for i = 1, 20 do
 				objbg:setPosition(sWidth-270,740)
@@ -299,6 +301,8 @@ function ObjAttackPattern:cutIn(cutType,cutImg)
 		end
 		local function SpellBonus()
 			local y2 = 800
+			local a = 0
+			local a2 = 0
 			local objtext2a = ObjText(-1000,-1000,70,"Titillium_SemiBold_Spell.fnt")
 			objtext2a:setText("Bonus:",270,"right")
 			objtext2a:setColor(128,255,255)

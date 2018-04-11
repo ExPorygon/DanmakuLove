@@ -320,5 +320,5 @@ function ObjPlayer:draw()
 		love.graphics.draw(self.image, drawX, drawY, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	end
 	love.graphics.setBlendMode(initBlendMode)
-	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setColor(1, 1, 1, 1)
 end

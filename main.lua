@@ -49,7 +49,7 @@ function generateScriptList(directory)
 	local itemList = love.filesystem.getDirectoryItems(directory)
 	for i = 1, #itemList do
 		local path = directory.."/"..itemList[i]
-		if love.filesystem.isDirectory(path) then
+		if love.filesystem.getInfo(path,'directory') then
 			local list = generateScriptList(path)
 			scriptList = concatTables(scriptList,list)
 		elseif path:sub(path:len()-3,path:len()) == ".lua" then

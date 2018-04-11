@@ -25,7 +25,7 @@ end
 
 function ObjSound:play(volume)
 	if volume then self.source:setVolume(volume) end
-	if self.source:isPlaying() then self.source:rewind() else self.source:play() end
+	if self.source:isPlaying() then self.source:seek(0) else self.source:play() end
 end
 
 function ObjSound:pause()

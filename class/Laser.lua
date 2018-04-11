@@ -117,7 +117,7 @@ function ObjLaser:draw()
 		love.graphics.setColor(self.color.red, self.color.green, self.color.blue, self.alpha)
 		love.graphics.draw(self.image, self.data.quad, drawX, drawY, math.rad(self.moveDir+90)+math.rad(self.data.rot_angle), self.lengthScale.x, self.lengthScale.y*self.spawnScale, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 		love.graphics.setBlendMode(initBlendMode)
-		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.setColor(1, 1, 1, 1)
 	end
 end
 
