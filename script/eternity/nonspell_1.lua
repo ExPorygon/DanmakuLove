@@ -4,7 +4,7 @@
 --Player[]
 
 local objPattern = ObjAttackPattern(1400,60)
-local shot1 = getSoundObject("shot1")
+-- local shot1 = getSoundObject("shot1")
 local func = {}
 
 function objPattern.start()
@@ -22,7 +22,7 @@ end
 function func.fire(self,num,w)
 	while true do
 		local dir = love.math.random(0,360)
-		shot1:play(0.6)
+		-- shot1:play(0.6)
 		for i = 1, num do
 			CreateShotA1(self.boss:getX(),self.boss:getY(),2.5,dir+i*360/num,"fire_red",10)
 		end
