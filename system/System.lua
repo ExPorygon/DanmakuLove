@@ -22,7 +22,7 @@ function System:destroy(entity) end
 
 function System:match(entity)
 	for i = 1, #self.requires do
-		if entity:get(self.requires[i] == nil) then
+		if entity:getComponent(self.requires[i]) == nil then
 			return false
 		end
 	end

@@ -17,6 +17,7 @@ function Entity:_init()
 	self.type = "base"
 	self.value = {}
     self.components = {}
+	table.insert(StateManager.current().entities,self)
 end
 
 function Entity:add(component)
@@ -24,7 +25,7 @@ function Entity:add(component)
     self.components[component.id] = component
 end
 
-function Entity:get(id)
+function Entity:getComponent(id)
     return self.components[id]
 end
 

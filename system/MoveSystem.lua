@@ -18,8 +18,8 @@ function MoveSystem:update(dt,entity)
 	-- if entity.isDelete then return end
 	-- entity:resumeTask("move")
 
-    local move_data = entity:get("move")
-    local pos_data = entity:get("position")
+    local move_data = entity:getComponent("move")
+    local pos_data = entity:getComponent("position")
 
 	move_data.moveDir = move_data.moveDir + move_data.angvel * 60 * dt
 	if (move_data.acc > 0 and move_data.speed < move_data.maxspeed) or (move_data.acc < 0 and move_data.speed > move_data.maxspeed) then

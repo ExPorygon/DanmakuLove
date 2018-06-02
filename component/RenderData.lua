@@ -11,7 +11,7 @@ setmetatable(RenderData, {
 })
 
 function RenderData:_init(priority,filepath,initX,initY,width,height)
-    Component._init(self,"render_data")
+    Component._init(self,"render")
 
 	if filepath then
 		self.filepath = filepath
@@ -51,5 +51,9 @@ function RenderData:_init(priority,filepath,initX,initY,width,height)
 	self.alpha = 255
 	self.visible = true
 	if priority then self.drawPriority = priority else self.drawPriority = 60 end
-	self:setDrawPriority(self.drawPriority)
+	-- self:setDrawPriority(self.drawPriority)
+end
+
+function RenderData:getDrawPriority(num)
+	return self.drawPriority
 end

@@ -6,7 +6,7 @@ local cursor = {}
 local selectIndex = 1
 local selectLength = 0
 
-selection.listDrawLayer = initDrawLayers()
+-- selection.listDrawLayer = initDrawLayers()
 
 function selection:init()
 end
@@ -55,7 +55,7 @@ function selection.keyDown()
 end
 
 function selection:draw()
-    draw_layers(self.listDrawLayer)
+    -- draw_layers(self.listDrawLayer)
     love.graphics.print("Select a script and press Z",100,60)
 end
 
