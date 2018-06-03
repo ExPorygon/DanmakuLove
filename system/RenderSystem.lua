@@ -21,6 +21,8 @@ function RenderSystem:draw(entity)
     local render_data = entity:getComponent("render")
     local pos_data = entity:getComponent("position")
 
+    if not render_data.visible then return end
+
 	local drawX,drawY
 	if self:checkPriorityRange(entity) then
 		drawX, drawY = pos_data.x + self.screen.left, pos_data.y + self.screen.top

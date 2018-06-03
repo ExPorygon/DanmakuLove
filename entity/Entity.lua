@@ -21,7 +21,8 @@ function Entity:_init()
 end
 
 function Entity:add(component)
-    assert(component.id)
+    assert(component.id,"Component already exists")
+	component.entity = self
     self.components[component.id] = component
 end
 
@@ -43,4 +44,11 @@ end
 
 function Entity:getSpeed()
 	return self.components.move.speed
+end
+
+function Entity:setVisible(bool)
+	local render = self.components.render
+	if not render then return end
+	-- assert(render,"The Entity does not have a 'render' component")
+	render.visible = bool
 end

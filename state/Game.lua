@@ -6,6 +6,9 @@ function game:init()
     self:register(MoveSystem())
 	self:register(RenderSystem(73,32,841,928))
     self:register(InputSystem())
+    self:register(PlayerSystem())
+    self:register(CollisionSystem())
+
 end
 
 function game:enter(old_state,toRun)

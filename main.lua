@@ -1,6 +1,7 @@
 function love.load()
 	__WORLD__ = require "class.World"
 	__WORLD__:init()
+	-- listEnemyCollisions = {}
 
 	require "state.State"
 
@@ -11,11 +12,15 @@ function love.load()
 	require "component.Move"
 	require "component.RenderData"
 	require "component.Input"
+	require "component.PlayerData"
+	require "component.Collision"
 
-	require "system.system"
+	require "system.System"
 	require "system.MoveSystem"
 	require "system.RenderSystem"
 	require "system.InputSystem"
+	require "system.PlayerSystem"
+	require "system.CollisionSystem"
 
 	StateManager = require "lib.GameState"
 	states = {
@@ -28,14 +33,16 @@ function love.load()
 
 	entity = Entity()
 	entity:add(Position(600,200))
-	entity:add(Move(3,45))
+	entity:add(Move(0,45))
 	entity:add(RenderData(30,"img/eternity.png",0,0,164,212))
+	entity:add(Collision("enemy",60))
 
 	player = Entity()
-	player:add(Position(640,680))
-	-- player:add(Move(3))
+	player:add(Position(600,680))
+	player:add(PlayerData())
 	player:add(Input())
 	player:add(RenderData(30,"img/eternity.png",0,0,164,212))
+	player:add(Collision("player",4))
 end
 
 function love.keypressed(key)
