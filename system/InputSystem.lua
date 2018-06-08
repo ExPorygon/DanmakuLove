@@ -30,52 +30,62 @@ function InputSystem:update(dt,entity)
     local screen = {left = 10, top = 10, right = 1280 - 10, bottom = 720 - 10}
 
     local speed
-	if Focus then speed = 2 else speed = 6 end
+	if Focus then speed = 4 else speed = 9 end
 
 	if Right and Down and pos_data.x < screen.right and pos_data.y < screen.bottom then
 		-- pos_data:setAnim("right")
-		pos_data.x = pos_data.x + speed * math.cos(math.rad(45)) * 100 * dt
-		pos_data.y = pos_data.y + speed * math.sin(math.rad(45)) * 100 * dt
+        player:setSpeed(speed)
+        player:setMoveDirection(45)
+		-- pos_data.x = pos_data.x + speed * math.cos(math.rad(45)) * 100 * dt
+		-- pos_data.y = pos_data.y + speed * math.sin(math.rad(45)) * 100 * dt
 		diag = true
-	end
-
-	if Right and Up and pos_data.x < screen.right and pos_data.y > screen.top then
+	elseif Right and Up and pos_data.x < screen.right and pos_data.y > screen.top then
 		-- pos_data:setAnim("right")
-		pos_data.x = pos_data.x + speed * math.cos(math.rad(45)) * 100 * dt
-		pos_data.y = pos_data.y - speed * math.sin(math.rad(45)) * 100 * dt
+        player:setSpeed(speed)
+        player:setMoveDirection(315)
+		-- pos_data.x = pos_data.x + speed * math.cos(math.rad(45)) * 100 * dt
+		-- pos_data.y = pos_data.y - speed * math.sin(math.rad(45)) * 100 * dt
 		diag = true
-	end
-
-	if Left and Down and pos_data.x > screen.left and pos_data.y < screen.bottom then
+	elseif Left and Down and pos_data.x > screen.left and pos_data.y < screen.bottom then
 		-- pos_data:setAnim("left")
-		pos_data.x = pos_data.x - speed * math.cos(math.rad(45)) * 100 * dt
-		pos_data.y = pos_data.y + speed * math.sin(math.rad(45)) * 100 * dt
+        player:setSpeed(speed)
+        player:setMoveDirection(135)
+		-- pos_data.x = pos_data.x - speed * math.cos(math.rad(45)) * 100 * dt
+		-- pos_data.y = pos_data.y + speed * math.sin(math.rad(45)) * 100 * dt
 		diag = true
-	end
-
-	if Left and Up and pos_data.x > screen.left and pos_data.y > screen.top then
+	elseif Left and Up and pos_data.x > screen.left and pos_data.y > screen.top then
 		-- pos_data:setAnim("left")
-		pos_data.x = pos_data.x - speed * math.cos(math.rad(45)) * 100 * dt
-		pos_data.y = pos_data.y - speed * math.sin(math.rad(45)) * 100 * dt
+        player:setSpeed(speed)
+        player:setMoveDirection(225)
+		-- pos_data.x = pos_data.x - speed * math.cos(math.rad(45)) * 100 * dt
+		-- pos_data.y = pos_data.y - speed * math.sin(math.rad(45)) * 100 * dt
 		diag = true
-	end
+	else
+        player:setSpeed(0)
+    end
 
 	if not diag then
 		if Right and pos_data.x < screen.right then
 			-- pos_data:setAnim("right")
-			pos_data.x = pos_data.x + (speed * 100 * dt)
-		end
-		if Left and pos_data.x > screen.left then
+			-- pos_data.x = pos_data.x + (speed * 100 * dt)
+            player:setSpeed(speed)
+            player:setMoveDirection(0)
+		elseif Left and pos_data.x > screen.left then
 			-- pos_data:setAnim("left")
-			pos_data.x = pos_data.x - (speed * 100 * dt)
-		end
-
-		if Down and pos_data.y < screen.bottom then
-			pos_data.y = pos_data.y + (speed * 100 * dt)
-		end
-		if Up and pos_data.y > screen.top then
-			pos_data.y = pos_data.y - (speed * 100 * dt)
-		end
+			-- pos_data.x = pos_data.x - (speed * 100 * dt)
+            player:setSpeed(speed)
+            player:setMoveDirection(180)
+		elseif Down and pos_data.y < screen.bottom then
+			-- pos_data.y = pos_data.y + (speed * 100 * dt)
+            player:setSpeed(speed)
+            player:setMoveDirection(90)
+		elseif Up and pos_data.y > screen.top then
+			-- pos_data.y = pos_data.y - (speed * 100 * dt)
+            player:setSpeed(speed)
+            player:setMoveDirection(270)
+		else
+            player:setSpeed(0)
+        end
 	end
 
 	-- if not Left and not Right then

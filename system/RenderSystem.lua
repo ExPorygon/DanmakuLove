@@ -24,11 +24,11 @@ function RenderSystem:draw(entity)
     if not render_data.visible then return end
 
 	local drawX,drawY
-	if self:checkPriorityRange(entity) then
-		drawX, drawY = pos_data.x + self.screen.left, pos_data.y + self.screen.top
-	else
+	-- if self:checkPriorityRange(entity) then
+	-- 	drawX, drawY = pos_data.x + self.screen.left, pos_data.y + self.screen.top
+	-- else
 		drawX, drawY = pos_data.x, pos_data.y
-	end
+	-- end
 
 	local initBlendMode = love.graphics.getBlendMode()
 	love.graphics.setBlendMode(render_data.blendMode)

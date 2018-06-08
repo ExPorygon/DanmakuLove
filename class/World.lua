@@ -26,11 +26,12 @@ function World:init()
 
     self.game_draw = {min = 20, max = 80}
     self.sound_list = {ALL = {}}
+	self.physicsWorld = love.physics.newWorld(0, 0, true)
 
 end
 
 function World:update(dt)
-
+	self.physicsWorld:update(1)
 end
 
 function setGameDrawPriority(min,max)

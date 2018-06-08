@@ -8,7 +8,7 @@ function game:init()
     self:register(InputSystem())
     self:register(PlayerSystem())
     self:register(CollisionSystem())
-
+    self:register(AnimationSystem())
 end
 
 function game:enter(old_state,toRun)
@@ -66,6 +66,21 @@ end
 function game:draw()
     -- draw_layers(self.listDrawLayer)
     State.draw(self)
+    love.graphics.setColor(0.76, 0.18, 0.05)
+	for _, body in pairs(__WORLD__.physicsWorld:getBodies()) do
+        for _, fixture in pairs(body:getFixtures()) do
+            local shape = fixture:getShape()
+            if shape:typeOf("CircleShape") then
+                local cx, cy = body:getWorldPoints(shape:getPoint())
+                love.graphics.circle("fill", cx, cy, shape:getRadius())
+            elseif shape:typeOf("PolygonShape") then
+                love.graphics.polygon("fill", body:getWorldPoints(shape:getPoints()))
+            else
+                love.graphics.line(body:getWorldPoints(shape:getPoints()))
+            end
+        end
+    end
+	love.graphics.setColor(1, 1, 1)
 end
 
 return game

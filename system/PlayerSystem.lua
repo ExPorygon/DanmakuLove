@@ -60,7 +60,13 @@ function PlayerSystem:update(dt,entity)
         else player.respawn_frames = player.respawn_frames - 1 end
 	end
     if player.state == "down" then entity:setVisible(false) else entity:setVisible(true) end
-	if player.state ~= "normal" then player.shotAllow = false else player.shotAllow = true end
+	if player.state ~= "normal" then
+        player.shotAllow = false
+        entity:setSpeed(0)
+        collision.body:setPosition(pos_data.x,pos_data.y)
+    else
+        player.shotAllow = true
+    end
 	if player.state ~= "normal" and player.state ~= "hit" then player.bombAllow = false else player.bombAllow = true end
 
 	-- if love.keyboard.isDown("x") and not player.isBombing and player.state == "normal" and player.spell > 0 then
@@ -71,7 +77,4 @@ function PlayerSystem:update(dt,entity)
 	-- if not isTaskAlive(player.task.bomb) then player.isBombing = false end
 
 	-- player:resumeAllTasks()
-    print(player.state)
-    print(player.deathbomb_frames)
-    print(player.death_frames)
 end
