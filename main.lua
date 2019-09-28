@@ -1,3 +1,5 @@
+require "fixed"
+
 function love.load()
 	StateManager = require "lib.GameState"
 	states = {
