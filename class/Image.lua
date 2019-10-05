@@ -14,7 +14,7 @@ setmetatable(ObjImage, {
 })
 
 
-function ObjImage:_init(x,y,priority,filepath,initX,initY,width,height)
+function ObjImage:_init(x,y,priority,filepath,initX,initY,width,height) --Consider reordering the arguments, specifically priority
 	ObjBase._init(self)
 	self.type = "image"
 	self.x = x

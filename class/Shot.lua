@@ -42,7 +42,7 @@ function ObjShot:_init(x,y,source)
 	if self.definition then	self.image = self.definition.image end
 end
 
-function initShotManager()
+function initShotManager() --might want to ask on the love forum for advice regarding whether this is the best solution to shot tables
 	shot_all = {}
 	laser_all = {}
 	for i = 1, 5000 do
@@ -71,7 +71,7 @@ function initShotManager()
 	scaleDelay = 0
 	minScaleDelay = 0
 
-	bulletBreak = ObjSpriteBatch(50,"img/bullet_break.png",5000)
+	bulletBreak = ObjSpriteBatch(50,"img/bullet_break.png",5000) --is bulletBreak global? make sure that if it is, it needs to be. otherwise make it local
 	bulletBreak:setGrid(64, 64, bulletBreak.image:getWidth(), bulletBreak.image:getHeight())
 	bulletBreak:setBlendMode("add")
 	bulletBreak.anim_list = {}
@@ -219,6 +219,7 @@ function ObjShot:spellCollision()
 			end
 		end
 	end
+	-- This was for testing the collision code i believe
 	-- for i = 1, 2000 do
 	-- 	local laser = laser_all[i]
 	-- 	if laser.isDelete == false and laser.source == "enemy" then

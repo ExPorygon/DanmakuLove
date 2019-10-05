@@ -14,7 +14,7 @@ setmetatable(ObjItem, {
 	end,
 })
 
-SignalManager.register("SGL_GET_ITEM", function(obj)
+SignalManager.register("SGL_GET_ITEM", function(obj) --make sure to implement some form of switch statement alternative
 	local player = getPlayer()
 	local system = getSystem()
 	if obj.id == "DEFAULT_DELETE" then
@@ -140,6 +140,7 @@ function ObjItem:update(dt)
 end
 
 function ObjItem.initPattern(self,pattern)
+	assert(pattern,"You must enter a valid pattern string code")
 	if pattern == "STANDARD_A1" then
 		self:setSpeed(-2.5)
 		self:setDirection(90)
@@ -158,7 +159,6 @@ function ObjItem.initPattern(self,pattern)
 			self:setDirection(getAngleToPlayer(self))
 			coroutine.yield()
 		end
-	elseif pattern == nil then error("You must enter a valid pattern string code")
 	else error("'"..pattern.."'is not a valid pattern code") end
 end
 

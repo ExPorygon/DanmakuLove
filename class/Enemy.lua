@@ -66,9 +66,9 @@ function ObjEnemy:update(dt)
 end
 
 function ObjEnemy:collision()
-	for i = 1, 5000 do
+	for i = 1, 5000 do --5000 is the arbitrary bullet limit -- could probably include a way to alter that from default value
 		if shot_all[i].isDelete == false and shot_all[i].source == "player" then
-			if math.dist(shot_all[i].x,shot_all[i].y,self.x,self.y) < (self.hitboxToShot + 14) then
+			if math.dist(shot_all[i].x,shot_all[i].y,self.x,self.y) < (self.hitboxToShot + 14) then --why are we using 14 here? is it supposed to be the bullet hitbox radius?
 				if self.invincibility <= 0 then self.life = self.life - shot_all[i].damage end
 				shot_all[i].penetration = shot_all[i].penetration - 1
 				if shot_all[i].penetration <= 0 then

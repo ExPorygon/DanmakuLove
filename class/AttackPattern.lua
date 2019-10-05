@@ -24,7 +24,7 @@ function ObjAttackPattern:_init(life,timer,name,spell,survival,last)
 	self.score_init = 0
 	self.score_count = 0
 	self.isScoreDecay = true
-	self.shootdown_num = 0
+	self.shootdown_num = 0 --consider renaming. perhaps to miss or death
 	self.bomb_num = 0
 	self.damage_rate = {shot = 100, bomb = 100}
 	self.cutImage = ""
