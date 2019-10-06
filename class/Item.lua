@@ -14,35 +14,67 @@ setmetatable(ObjItem, {
 	end,
 })
 
-SignalManager.register("SGL_GET_ITEM", function(obj) --make sure to implement some form of switch statement alternative
-	local player = getPlayer()
-	local system = getSystem()
-	if obj.id == "DEFAULT_DELETE" then
-		system:addPIV(1+1*player.graze/100)
-	elseif obj.id == "DEFAULT_POWER" then
+-- SignalManager.register("SGL_GET_ITEM", function(obj) --make sure to implement some form of switch statement alternative
+-- 	local player = getPlayer()
+-- 	local system = getSystem()
+-- 	if obj.id == "DEFAULT_DELETE" then
+-- 		system:addPIV(1+1*player.graze/100)
+-- 	elseif obj.id == "DEFAULT_POWER" then
+-- 		if player.power < player.power_max then player.power = player.power + 1 end
+-- 	elseif obj.id == "DEFAULT_POINT" then
+-- 		system:addScore(obj.score)
+-- 	elseif obj.id == "DEFAULT_FULL_POWER" then
+-- 		player.power = player.power_max
+-- 	elseif obj.id == "DEFAULT_BOMB_PIECE" then
+-- 		if player.spell_piece < player.spell_piece_max then player.spell_piece = player.spell_piece + 1 end
+-- 		if player.spell_piece == player.spell_piece_max then
+-- 			player.spell = player.spell + 1
+-- 			player.spell_piece = 0
+-- 		end
+-- 	elseif obj.id == "DEFAULT_BOMB" then
+-- 		if player.spell < player.spell_max then player.spell = player.spell + 1 end
+-- 	elseif obj.id == "DEFAULT_LIFE_PIECE" then
+-- 		if player.life_piece < player.life_piece_max then player.life_piece = player.life_piece + 1 end
+-- 		if player.life_piece == player.life_piece_max then
+-- 			player.life = player.life + 1
+-- 			player.life_piece = 0
+-- 		end
+-- 	elseif obj.id == "DEFAULT_LIFE" then
+-- 		if player.life < player.life_max then player.life = player.life + 1 end
+-- 	end
+-- end)
+
+local t = switch2 {
+	DEFAULT_POINT = function (obj) system:addScore(obj.score) print("point") end,
+	DEFAULT_POWER = function (obj)
 		if player.power < player.power_max then player.power = player.power + 1 end
-	elseif obj.id == "DEFAULT_POINT" then
-		system:addScore(obj.score)
-	elseif obj.id == "DEFAULT_FULL_POWER" then
-		player.power = player.power_max
-	elseif obj.id == "DEFAULT_BOMB_PIECE" then
+	end,
+	DEFAULT_DELETE = function (obj) system:addPIV(1+1*player.graze/100) end,
+	DEFAULT_FULL_POWER = function (obj) player.power = player.power_max end,
+	DEFAULT_BOMB_PIECE = function (obj)
 		if player.spell_piece < player.spell_piece_max then player.spell_piece = player.spell_piece + 1 end
 		if player.spell_piece == player.spell_piece_max then
 			player.spell = player.spell + 1
 			player.spell_piece = 0
 		end
-	elseif obj.id == "DEFAULT_BOMB" then
+	end,
+	DEFAULT_BOMB = function(obj)
 		if player.spell < player.spell_max then player.spell = player.spell + 1 end
-	elseif obj.id == "DEFAULT_LIFE_PIECE" then
+	end,
+	DEFAULT_LIFE_PIECE = function(obj)
 		if player.life_piece < player.life_piece_max then player.life_piece = player.life_piece + 1 end
 		if player.life_piece == player.life_piece_max then
 			player.life = player.life + 1
 			player.life_piece = 0
 		end
-	elseif obj.id == "DEFAULT_LIFE" then
+	end,
+	DEFAULT_LIFE = function(obj)
 		if player.life < player.life_max then player.life = player.life + 1 end
-	end
-end)
+	end,
+	default = function(obj) end
+}
+
+SignalManager.register("SGL_GET_ITEM", function(obj) t:case(obj.id,obj) end)
 
 function initItemManager()
 	item_all = {}
