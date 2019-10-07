@@ -14,38 +14,8 @@ setmetatable(ObjItem, {
 	end,
 })
 
--- SignalManager.register("SGL_GET_ITEM", function(obj) --make sure to implement some form of switch statement alternative
--- 	local player = getPlayer()
--- 	local system = getSystem()
--- 	if obj.id == "DEFAULT_DELETE" then
--- 		system:addPIV(1+1*player.graze/100)
--- 	elseif obj.id == "DEFAULT_POWER" then
--- 		if player.power < player.power_max then player.power = player.power + 1 end
--- 	elseif obj.id == "DEFAULT_POINT" then
--- 		system:addScore(obj.score)
--- 	elseif obj.id == "DEFAULT_FULL_POWER" then
--- 		player.power = player.power_max
--- 	elseif obj.id == "DEFAULT_BOMB_PIECE" then
--- 		if player.spell_piece < player.spell_piece_max then player.spell_piece = player.spell_piece + 1 end
--- 		if player.spell_piece == player.spell_piece_max then
--- 			player.spell = player.spell + 1
--- 			player.spell_piece = 0
--- 		end
--- 	elseif obj.id == "DEFAULT_BOMB" then
--- 		if player.spell < player.spell_max then player.spell = player.spell + 1 end
--- 	elseif obj.id == "DEFAULT_LIFE_PIECE" then
--- 		if player.life_piece < player.life_piece_max then player.life_piece = player.life_piece + 1 end
--- 		if player.life_piece == player.life_piece_max then
--- 			player.life = player.life + 1
--- 			player.life_piece = 0
--- 		end
--- 	elseif obj.id == "DEFAULT_LIFE" then
--- 		if player.life < player.life_max then player.life = player.life + 1 end
--- 	end
--- end)
-
-local t = switch2 {
-	DEFAULT_POINT = function (obj) system:addScore(obj.score) print("point") end,
+local t = switch {
+	DEFAULT_POINT = function (obj) system:addScore(obj.score) end,
 	DEFAULT_POWER = function (obj)
 		if player.power < player.power_max then player.power = player.power + 1 end
 	end,

@@ -1,5 +1,5 @@
+local script = require("lib.script")
 local selection = {}
-
 local scriptData = {}
 local text = {}
 local cursor = {}
@@ -13,7 +13,7 @@ end
 
 function selection:enter()
     selectIndex = 1
-    scriptData = generateScriptDataList()
+    scriptData = script.generateDataList()
     selectLength = #scriptData
     for i = 1, #scriptData do
         text[i] = ObjText(100,50+40*i,81,"Titillium_SemiBold_HUD.fnt",scriptData[i].Title)

@@ -1,4 +1,5 @@
 require "fixed"
+require "lib.global"
 
 function love.load()
 	StateManager = require "lib.GameState"
@@ -19,86 +20,6 @@ function love.load()
 	StateManager.switch(states.scriptselection)
 	StateManager.registerEvents()
 
-end
-
-function generateScriptDataList()
-	local list = generateScriptList("script")
-	local returnData = {}
-	for i = #list, 1, -1 do
-		if not checkScriptHeader(list[i]) then table.remove(list,i) end
-	end
-	for i = 1, #list do
-		local data = generateScriptData(list[i])
-		if data.Type ~= "Player" then table.insert(returnData,{FilePath = list[i], Type = data.Type, Title = data.Title, Text = data.Text}) end
-	end
-	return returnData
-end
-
-function generateScriptData(filepath)
-	local file = love.filesystem.read(filepath)
-	local data = {}
-	for s in file:gmatch("[^\n]+") do
-		local cap1, cap2 = s:match('--(%a*)%[(.-)%]')
-		if cap1 == nil then break end
-		if cap1 == "DanmakuLove" then cap1 = "Type" end
-		data[cap1] = cap2
-	end
-	return data
-end
-
-function generateScriptList(directory)
-	local scriptList = {}
-	local itemList = love.filesystem.getDirectoryItems(directory)
-	for i = 1, #itemList do
-		local path = directory.."/"..itemList[i]
-		if love.filesystem.getInfo(path,'directory') then
-			local list = generateScriptList(path)
-			scriptList = concatTables(scriptList,list)
-		elseif path:sub(path:len()-3,path:len()) == ".lua" then
-			table.insert(scriptList,path)
-		end
-	end
-	return scriptList
-end
-
-function concatTables(t1,t2)
-    for i=1,#t2 do
-        t1[#t1+1] = t2[i]
-    end
-    return t1
-end
-
-function checkScriptHeader(filepath)
-	local file = love.filesystem.read(filepath)
-	if file:find("--DanmakuLove") then return true else return false end
-end
-
-function switch(t)
-  t.case = function (self,x)
-    local f=self[x] or self.default
-    if f then
-      if type(f)=="function" then
-        f(x,self)
-      else
-        error("case "..tostring(x).." is not a function")
-      end
-    end
-  end
-  return t
-end
-
-function switch2(t)
-  t.case = function (self,x,...)
-    local f=self[x] or self.default
-    if f then
-      if type(f)=="function" then
-        f(...,self) --consider making this (...,x,self)
-      else
-        error("case "..tostring(x).." is not a function")
-      end
-    end
-  end
-  return t
 end
 
 function love.keypressed(key)
