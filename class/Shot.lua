@@ -155,7 +155,7 @@ function ObjShot:draw()
 		if self.data.offsetY then self.offset_manual.y = self.data.offsetY end
 
 		local initBlendMode = love.graphics.getBlendMode()
-		self.blendMode = self.data.render
+		self.blendMode = "alpha"
 		love.graphics.setBlendMode(self.blendMode)
 		love.graphics.setColor(self.color.red, self.color.green, self.color.blue, self.alpha)
 

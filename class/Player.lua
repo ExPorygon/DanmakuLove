@@ -315,7 +315,8 @@ function ObjPlayer:draw()
 		love.graphics.draw(self.image, self.quad, drawX, drawY, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	elseif self.animCurrent then
 		local animCurrent = self.animCurrent
-		if animCurrent then self.animList[animCurrent]:draw(self.image, drawX, drawY, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y) end
+		-- if animCurrent then self.animList[animCurrent]:draw(self.image, drawX, drawY, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y) end
+		if animCurrent then self.animList[animCurrent]:draw(drawX, drawY, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y) end
 	elseif self.image then
 		love.graphics.draw(self.image, drawX, drawY, self.rotAngle, self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	end

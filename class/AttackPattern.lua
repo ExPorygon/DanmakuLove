@@ -122,7 +122,7 @@ function ObjAttackPattern:getTimer()
 end
 
 function ObjAttackPattern:setScoreBase(base)
-	self.scoreBase = BaseClass
+	self.scoreBase = base
 end
 
 function ObjAttackPattern:startSpell(score)

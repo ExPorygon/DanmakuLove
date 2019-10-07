@@ -1,5 +1,6 @@
 require "class/Base"
 local anim8 = require 'lib/anim8'
+local animator = require 'lib/animator'
 
 ObjImage = {}
 ObjImage.__index = ObjImage
@@ -93,13 +94,22 @@ end
 function ObjImage:setAnim(name)
 	if self.animCurrent ~= name then
 		self.animCurrent = name
-		self.animList[name]:gotoFrame(1)
-		self.animList[name]:resume()
+		self.animList[name]:restart()
+		-- self.animList[name]:resume()
 	end
 end
-function ObjImage:addAnim(name,onLoop,duration,...)
+-- function ObjImage:addAnim(name,onLoop,duration,...)
+-- 	local frames = self.grid(...)
+-- 	local animation = anim8.newAnimation(frames, duration, onLoop)
+-- 	self.animList[name] = animation
+-- end
+function ObjImage:addAnim(name,looping,duration,...)
 	local frames = self.grid(...)
-	local animation = anim8.newAnimation(frames, duration, onLoop)
+	local delays = duration
+	local animation = animator.newAnimation(frames, delays, self.image)
+	if looping then animation:setLooping()
+	else animation:setPauseAtEnd(true) end
+
 	self.animList[name] = animation
 end
 function ObjImage:getCurrentAnim()
@@ -237,7 +247,8 @@ function ObjImage:draw()
 		love.graphics.draw(self.image, self.quad, drawX, drawY, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	elseif self.animCurrent then
 		local animCurrent = self.animCurrent
-		if animCurrent then self.animList[animCurrent]:draw(self.image, drawX, drawY, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y) end
+		-- if animCurrent then self.animList[animCurrent]:draw(self.image, drawX, drawY, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y) end
+		if animCurrent then self.animList[animCurrent]:draw() end
 	elseif self.image then
 		love.graphics.draw(self.image, drawX, drawY, math.rad(self.rotAngle), self.scale.x, self.scale.y, self.offset_auto.x+self.offset_manual.x, self.offset_auto.y+self.offset_manual.y)
 	end
