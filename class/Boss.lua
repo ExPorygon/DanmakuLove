@@ -35,7 +35,7 @@ function ObjBoss:_init(x,y,filepath,initX,initY,width,height)
 
 end
 
-function ObjBoss.initHUD(self)
+function ObjBoss.initHUD(self) --Individual hud pieces should be toggleable
 	self.HUD.lifebar = ObjImage(system:getCenterX()+30,60,40,"img/lifebar.png",169,7,686,50)
 
 	self.HUD.divider = {}

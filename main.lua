@@ -73,6 +73,34 @@ function checkScriptHeader(filepath)
 	if file:find("--DanmakuLove") then return true else return false end
 end
 
+function switch(t)
+  t.case = function (self,x)
+    local f=self[x] or self.default
+    if f then
+      if type(f)=="function" then
+        f(x,self)
+      else
+        error("case "..tostring(x).." is not a function")
+      end
+    end
+  end
+  return t
+end
+
+function switch2(t)
+  t.case = function (self,x,...)
+    local f=self[x] or self.default
+    if f then
+      if type(f)=="function" then
+        f(...,self) --consider making this (...,x,self)
+      else
+        error("case "..tostring(x).." is not a function")
+      end
+    end
+  end
+  return t
+end
+
 function love.keypressed(key)
 	if key == 'escape' then love.event.quit() end
 end

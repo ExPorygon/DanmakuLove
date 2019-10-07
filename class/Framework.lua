@@ -21,7 +21,7 @@ function Framework:init()
     require "class.Boss"
     require "class.AttackPattern"
     require "class.Laser"
-	require "class.Item"
+		require "class.Item"
     require "class.Player"
 
     self.game_draw = {min = 20, max = 80}

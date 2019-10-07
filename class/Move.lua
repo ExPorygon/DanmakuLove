@@ -31,7 +31,7 @@ function ObjMove:setDestAtWeight(x,y,weight,max_speed)
 	if x == self.x and y == self.y then return end
 	local function move(obj,x,y,weight,max_speed)
 		local distance = math.dist(self.x,self.y,x,y)
-		local angle = AngleBetweenPoints(self.x,self.y,x,y)
+		local angle = AngleBetweenPoints(self.x,self.y,x,y) --should probably rename anglebetweenpoints and add it to math library
 		while distance > 1 do
 			local speed = distance/weight
 			if speed > max_speed then speed = max_speed end
@@ -45,6 +45,38 @@ function ObjMove:setDestAtWeight(x,y,weight,max_speed)
 
 	self:startNamedTask(move,"move",self,x,y,weight,max_speed)
 end
+--Drake's version of the Danmakufu DestAtWeight function
+--Needs to be ported to lua
+-- task _ObjMove_SetDestAtWeight(obj, ex, ey, w, s){
+--     let sx = ObjMove_GetX(obj);
+--     let sy = ObjMove_GetY(obj);
+--
+--     let slope_x = ex - sx;
+--     let slope_y = ey - sy;
+--
+--     let total_dist = (slope_x * slope_x + slope_y * slope_y) ^ 0.5;
+--     let remain_dist = total_dist;
+--
+--     slope_x /= total_dist;
+--     slope_y /= total_dist;
+--
+--     while(remain_dist > 0){
+--         let tmp_s = s;
+--
+--         if(remain_dist < 1){break;}
+--         if(remain_dist < s * w){
+--             tmp_s = remain_dist / w;
+--         }
+--
+--         sx += slope_x * tmp_s;
+--         sy += slope_y * tmp_s;
+--
+--         ObjMove_SetPosition(obj, sx, sy);
+--
+--         remain_dist -= tmp_s;
+--         yield;
+--     }
+-- }
 
 function ObjMove:setDestAtSpeed(x,y,speed)
 	self.destX = x

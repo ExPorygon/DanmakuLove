@@ -50,5 +50,5 @@ end
 function collideRectangleWithRectangle(rect1, rect2)
 	if rect1.X1 < rect2.X2 and rect1.X2 > rect2.X1 and rect1.Y1 < rect2.Y2 and rect1.Y2 > rect2.Y1 then
 		return true
-	end
+	else return false end
 end
