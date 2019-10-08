@@ -86,7 +86,6 @@ function love.load()
 
 	StateManager.switch(states.scriptselection)
 	StateManager.registerEvents()
-	print("test")
 end
 
 function love.keypressed(key)
